@@ -12,5 +12,5 @@ preloadState.prototype.preload = function() {
 };
 
 preloadState.prototype.create = function() {
-    game.state.start("Game");
+    game.state.start("Title");
 };
