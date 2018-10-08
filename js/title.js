@@ -3,14 +3,11 @@
 let Car=function(game, x, y, lane=0, takenArray=[], hud){
 	//use lane for which lane the car will spawn in, might change how x and y works for y to be static for all cars but x is dependent on lane and isn't a part of the parameters
 	//will change x based on lane? maybe
-	Phaser.Sprite.call(this, game, x+100*lane, y, 'sedan');
 	this.startingY=y; //-> this should be the top of the screen
 	this.startingX=x;
 	this.hud=hud;
 	this.isWanted=false;
 	this.takenArray=takenArray;
-	this.inputEnabled=true;
-	this.events.onInputDown.add(clicked, this);
 	//list of possible license plates
 	this.plateArray=["TGH 5675", "WIN 2359", "ADE 6577", "HHT 6054", "LMB 1653", "KWQ 9424", "PWF 0248"];
 	if(this.takenArray.length===0){
@@ -21,6 +18,36 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 		this.plateIndex=Math.floor(Math.random() * this.plateArray.length);
 	} 
 	this.takenArray[this.plateIndex]=true;
+	//change 5 to number of car models
+	switch(this.plateIndex%5){
+		case 0:
+		Phaser.Sprite.call(this, game, x+100*lane, y, 'sedan');
+		this.make='sedan';
+		this.carColor='red';
+		break;
+		case 1:
+		Phaser.Sprite.call(this, game, x+100*lane, y, 'sedan');
+		this.make='sedan';
+		this.carColor='red';
+		break;
+		case 2:
+		Phaser.Sprite.call(this, game, x+100*lane, y, 'sedan');
+		this.make='sedan';
+		this.carColor='red';
+		break;
+		case 3:
+		Phaser.Sprite.call(this, game, x+100*lane, y, 'sedan');
+		this.make='sedan';
+		this.carColor='red';
+		break;
+		case 4:
+		Phaser.Sprite.call(this, game, x+100*lane, y, 'sedan');
+		this.make='sedan';
+		this.carColor='red';
+		break;
+	}
+	this.inputEnabled=true;
+	this.events.onInputDown.add(clicked, this);
 	if(this.plateIndex===1){
 		this.isWanted=true;
 	}
@@ -59,7 +86,7 @@ let titleState = function(){
 titleState.prototype.create = function(){
 	this.hud=new HUD(game);
 	this.currentTime=0;
-	this.spawnTime=Math.floor(Math.random()*10)+5;
+	this.spawnTime=Math.floor(Math.random()*10)+3;
 	spawnNewCar(this.hud);
 };
 titleState.prototype.update = function(){
@@ -84,7 +111,7 @@ titleState.prototype.update = function(){
 	if(this.spawnTime<=this.game.time.totalElapsedSeconds()-this.currentTime){
 		spawnNewCar(this.hud);
 		this.currentTime=this.game.time.totalElapsedSeconds();
-		this.spawnTime=Math.floor(Math.random()*10)+5;
+		this.spawnTime=Math.floor(Math.random()*10)+3;
 	}
 };
 //used to kill the car when it hits the bounds of the screen.
