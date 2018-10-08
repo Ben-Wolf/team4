@@ -8,6 +8,7 @@ preloadState.prototype.preload = function() {
 	game.load.image("bound_h", "assets/bound_h.png");
 	game.load.image("bound_v", "assets/bound_v.png");
     game.load.image("steering_wheel", "assets/bound_h.png");
+    game.load.image("sedan", "assets/Sedan Sprite 1.png");
 	game.load.spritesheet("murph", "assets/character.png", 32, 48);
 };
 

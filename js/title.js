@@ -3,7 +3,7 @@
 let Car=function(game, x, y, lane=0, takenArray=[], hud){
 	//use lane for which lane the car will spawn in, might change how x and y works for y to be static for all cars but x is dependent on lane and isn't a part of the parameters
 	//will change x based on lane? maybe
-	Phaser.Sprite.call(this, game, x+100*lane, y, 'murph');
+	Phaser.Sprite.call(this, game, x+100*lane, y, 'sedan');
 	this.startingY=y; //-> this should be the top of the screen
 	this.startingX=x;
 	this.hud=hud;
@@ -88,10 +88,8 @@ titleState.prototype.update = function(){
 };
 //used to kill the car when it hits the bounds of the screen.
 resetThis=function(car, hud){
-	car.kill();
-	//car.y=car.startingY;
-	car.takenArray[car.plateIndex]=false;
 	car.hud.takenArray[car.plateIndex]=false;
+	car.destroy();
 };
 spawnNewCar=function(hud){
 	let spawnedCar=new Car(game, 40, 400, Math.floor(Math.random()*3),hud.takenArray,hud);
