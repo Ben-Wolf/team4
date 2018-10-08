@@ -1,18 +1,18 @@
 // Car class and titleState stuff.
 //note: using https://github.com/photonstorm/phaser-examples/blob/master/examples/sprites/extending%20sprite%20demo%201.js as reference for creating the  car class
-Car=function(game, x, y, lane=0, takenArray=[]){
+let Car=function(game, x, y, lane=0, takenArray=[], hud){
 	//use lane for which lane the car will spawn in, might change how x and y works for y to be static for all cars but x is dependent on lane and isn't a part of the parameters
 	//will change x based on lane? maybe
-	//isWanted will probably be used for if this is the car this wanted, will probably deleted it later to just check if the license plate is the one that the player wants
-	Phaser.Sprite.call(this, game, x+100*lane, y, 'murph');
+	Phaser.Sprite.call(this, game, x+100*lane, y, 'sedan');
 	this.startingY=y; //-> this should be the top of the screen
 	this.startingX=x;
+	this.hud=hud;
 	this.isWanted=false;
 	this.takenArray=takenArray;
 	this.inputEnabled=true;
 	this.events.onInputDown.add(clicked, this);
 	//list of possible license plates
-	this.plateArray=["TGH 5675", "WIN 2359", "ADE 6577", "HHT 6054", "LMB 1653"];
+	this.plateArray=["TGH 5675", "WIN 2359", "ADE 6577", "HHT 6054", "LMB 1653", "KWQ 9424", "PWF 0248"];
 	if(this.takenArray.length===0){
 		this.takenArray.fill(0, this.plateArray.length,false);
 	}
@@ -30,81 +30,83 @@ Car.prototype = Object.create(Phaser.Sprite.prototype);
 Car.prototype.constructor=Car;
 Car.prototype.update=function(){
 //car movement should be defined in here
-	this.y-=1;
+	this.y-=3;
 	//this.txt.y=this.y;
 	this.checkWorldBounds = true;
 	this.events.onOutOfBounds.add(resetThis, this);
-	}
+};
+
+//HUD is well, the HUD for phase 1. Also tracks if the player has found the right car or not. 
+let HUD=function(game){
+	this.plateTxt=game.add.text(500, 2300, "");
+	this.plateTxt.addColor("#ffffff",0);
+	this.plateTxt.visible=false;
+	this.wantTxt=game.add.text(500, this.plateTxt.y-30, "Looking for: WIN 2359");
+	this.wantTxt.addColor("#ffffff",0);
+	this.slider=game.add.sprite(500,550,"star");
+	this.slider.inputEnabled=true;
+	//rectangle is supposed to be bounds, it isn't...
+	this.slider.input.enableDrag(false,false,false, Phaser.Rectangle(500, 550, 100, 100));
+	this.slider.input.allowVerticalDrag=false;
+	this.slider.events.onDragStop.add(goBack, this);
+	this.takenArray=[]
+	this.win=false;
+};
+HUD.prototype.constructor=HUD;
+
 let titleState = function(){
 };
-let star;
-let plateTxt;
-let slider;
-let win=false;
-let takenArray=[];
 titleState.prototype.create = function(){
-	plateTxt=game.add.text(500, 500, "");
-	plateTxt.addColor("#ffffff",0);
-	plateTxt.visible=false;
-	let wantTxt=game.add.text(500, 470, "Looking for: WIN 2359");
-	wantTxt.addColor("#ffffff",0);
-	slider=game.add.sprite(500,550,"star");
-	slider.inputEnabled=true;
-	slider.input.enableDrag(false,false,false, Phaser.Rectangle(500, 550, 100, 100));
-	slider.input.allowVerticalDrag=false;
-	slider.events.onDragStop.add(goBack, this);
+	this.hud=new HUD(game);
 	this.currentTime=0;
-	this.spawnTime=Math.floor(Math.random()*5)+2;
-
+	this.spawnTime=Math.floor(Math.random()*10)+5;
+	spawnNewCar(this.hud);
 };
-
 titleState.prototype.update = function(){
-	slider.y=550;
-	if(slider.x>600){
-			slider.x=600;
+	this.hud.slider.y=2400;
+	if(this.hud.slider.x>600){
+			this.hud.slider.x=600;
 		}
-		else if(slider.x<500){
-			slider.x=500;
+		else if(this.hud.slider.x<500){
+			this.hud.slider.x=500;
 		}
 	if(game.input.mousePointer.x<500||game.input.mousePointer.x>600){
-		slider.input.allowHorizontalDrag=false;
+		this.hud.slider.input.allowHorizontalDrag=false;
 	}
-	else if(!slider.input.allowHorizontalDrag){
-		slider.input.allowHorizontalDrag=true;
+	else if(!this.hud.slider.input.allowHorizontalDrag){
+		this.hud.slider.input.allowHorizontalDrag=true;
 	}
-	if(slider.x>=590){
-		if(win){
+	if(this.hud.slider.x>=580){
+		if(this.hud.win){
 			game.state.start("Game");
 		}
 	}
 	if(this.spawnTime<=this.game.time.totalElapsedSeconds()-this.currentTime){
-		spawnNewCar(this.takenArray);
+		spawnNewCar(this.hud);
 		this.currentTime=this.game.time.totalElapsedSeconds();
-		this.spawnTime=Math.floor(Math.random()*3)+2;
+		this.spawnTime=Math.floor(Math.random()*10)+5;
 	}
 };
-resetThis=function(car){
-	car.kill();
-	car.y=car.startingY;
-	car.takenArray[car.plateIndex]=false;
-	takenArray[car.plateIndex]=false;
+//used to kill the car when it hits the bounds of the screen.
+resetThis=function(car, hud){
+	car.hud.takenArray[car.plateIndex]=false;
+	car.destroy();
 };
-spawnNewCar=function(){
-	let spawnedCar=new Car(game, 40, 400, Math.floor(Math.random()*3),takenArray);
-	takenArray=spawnedCar.takenArray;
+spawnNewCar=function(hud){
+	let spawnedCar=new Car(game, 40, 2436, Math.floor(Math.random()*3),hud.takenArray,hud);
+	hud.takenArray=spawnedCar.takenArray;
 	game.add.existing(spawnedCar);
 };
 clicked=function(car){
-	plateTxt.visible=true;
-	plateTxt.text=car.plateArray[car.plateIndex];
+	car.hud.plateTxt.visible=true;
+	car.hud.plateTxt.text=car.plateArray[car.plateIndex];
 	if(car.isWanted){
-		win=true;
+		car.hud.win=true;
 	}
 	else{
-		win=false;
+		car.hud.win=false;
 	}
 };
 goBack=function(slider){
 		slider.x=500;
-	
 }
