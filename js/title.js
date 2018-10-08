@@ -35,6 +35,8 @@ Car.prototype.update=function(){
 	this.checkWorldBounds = true;
 	this.events.onOutOfBounds.add(resetThis, this);
 };
+
+//HUD is well, the HUD for phase 1. Also tracks if the player has found the right car or not. 
 let HUD=function(game){
 	this.plateTxt=game.add.text(500, 500, "");
 	this.plateTxt.addColor("#ffffff",0);
@@ -51,16 +53,14 @@ let HUD=function(game){
 	this.win=false;
 };
 HUD.prototype.constructor=HUD;
+
 let titleState = function(){
 };
-//going to get rid of global variables, most will probably be placed in a HUD sort of class...
 titleState.prototype.create = function(){
 	this.hud=new HUD(game);
 	this.currentTime=0;
 	this.spawnTime=Math.floor(Math.random()*5)+2;
-
 };
-
 titleState.prototype.update = function(){
 	this.hud.slider.y=550;
 	if(this.hud.slider.x>600){
@@ -110,5 +110,4 @@ clicked=function(car){
 };
 goBack=function(slider){
 		slider.x=500;
-	
 }
