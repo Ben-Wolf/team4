@@ -46,6 +46,8 @@ titleState.prototype.create = function(){
 	plateTxt=game.add.text(500, 500, "");
 	plateTxt.addColor("#ffffff",0);
 	plateTxt.visible=false;
+	let wantTxt=game.add.text(500, 470, "Looking for: WIN 2359");
+	wantTxt.addColor("#ffffff",0);
 	slider=game.add.sprite(500,550,"star");
 	slider.inputEnabled=true;
 	slider.input.enableDrag(false,false,false, Phaser.Rectangle(500, 550, 100, 100));
@@ -72,7 +74,6 @@ titleState.prototype.update = function(){
 	}
 	if(slider.x>=590){
 		if(win){
-			console.log("Next level switch now");
 			game.state.start("Game");
 		}
 	}
