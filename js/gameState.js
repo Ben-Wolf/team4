@@ -5,24 +5,30 @@ let gameState = function(){
 
 gameState.prototype.create = function() {
     // Load in background assets TODO: Actually load in background assets
-    game.stage.backgroundColor = '#943021';
+    //game.stage.backgroundColor = '#943021';
+	var map;
+	var layer;
+	map = game.add.tilemap("TileMap");
+	map.addTilesetImage("tileset", "tileset");
+	layer = map.createLayer("Tile Layer 1");
+	layer.resizeWorld();
 
     // Create the boundaries TODO: Make this adding in the boundaries, tilesets, etc...
 	this.bounds = game.add.group();
 	this.bounds.enableBody = true;
-	let bound_b = this.bounds.create(0, game.world.height - 600, "bound_h");
+	let bound_b = this.bounds.create(0, game.world.height - 600);
 	bound_b.scale.set(4, 2);
 	bound_b.body.immovable = true;
     bound_b.tint = 0xff00ff;
-	let bound_t = this.bounds.create(0, 0, "bound_h");
+	let bound_t = this.bounds.create(0, 0);
     bound_t.scale.set(4, 2);
 	bound_t.body.immovable = true;
     bound_t.tint = 0xff00ff;
-    let bound_l = this.bounds.create(100, 0, "bound_v");
+    let bound_l = this.bounds.create(100, 0);
     bound_l.scale.set(2, 6.5);
     bound_l.body.immovable = true;
     bound_l.tint = 0xff00ff;
-    let bound_r = this.bounds.create(1000, 0, "bound_v");
+    let bound_r = this.bounds.create(1000, 0);
     bound_r.scale.set(2, 6.5);
     bound_r.body.immovable = true;
     bound_r.tint = 0xff00ff;
