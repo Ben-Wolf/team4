@@ -12,7 +12,7 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 	this.inputEnabled=true;
 	this.events.onInputDown.add(clicked, this);
 	//list of possible license plates
-	this.plateArray=["TGH 5675", "WIN 2359", "ADE 6577", "HHT 6054", "LMB 1653"];
+	this.plateArray=["TGH 5675", "WIN 2359", "ADE 6577", "HHT 6054", "LMB 1653", "KWQ 9424", "PWF 0248"];
 	if(this.takenArray.length===0){
 		this.takenArray.fill(0, this.plateArray.length,false);
 	}
@@ -30,7 +30,7 @@ Car.prototype = Object.create(Phaser.Sprite.prototype);
 Car.prototype.constructor=Car;
 Car.prototype.update=function(){
 //car movement should be defined in here
-	this.y-=1;
+	this.y-=3;
 	//this.txt.y=this.y;
 	this.checkWorldBounds = true;
 	this.events.onOutOfBounds.add(resetThis, this);
@@ -38,10 +38,10 @@ Car.prototype.update=function(){
 
 //HUD is well, the HUD for phase 1. Also tracks if the player has found the right car or not. 
 let HUD=function(game){
-	this.plateTxt=game.add.text(500, 500, "");
+	this.plateTxt=game.add.text(500, 2300, "");
 	this.plateTxt.addColor("#ffffff",0);
 	this.plateTxt.visible=false;
-	this.wantTxt=game.add.text(500, 470, "Looking for: WIN 2359");
+	this.wantTxt=game.add.text(500, this.plateTxt.y-30, "Looking for: WIN 2359");
 	this.wantTxt.addColor("#ffffff",0);
 	this.slider=game.add.sprite(500,550,"star");
 	this.slider.inputEnabled=true;
@@ -59,10 +59,11 @@ let titleState = function(){
 titleState.prototype.create = function(){
 	this.hud=new HUD(game);
 	this.currentTime=0;
-	this.spawnTime=Math.floor(Math.random()*5)+2;
+	this.spawnTime=Math.floor(Math.random()*10)+5;
+	spawnNewCar(this.hud);
 };
 titleState.prototype.update = function(){
-	this.hud.slider.y=550;
+	this.hud.slider.y=2400;
 	if(this.hud.slider.x>600){
 			this.hud.slider.x=600;
 		}
@@ -75,7 +76,7 @@ titleState.prototype.update = function(){
 	else if(!this.hud.slider.input.allowHorizontalDrag){
 		this.hud.slider.input.allowHorizontalDrag=true;
 	}
-	if(this.hud.slider.x>=590){
+	if(this.hud.slider.x>=580){
 		if(this.hud.win){
 			game.state.start("Game");
 		}
@@ -83,7 +84,7 @@ titleState.prototype.update = function(){
 	if(this.spawnTime<=this.game.time.totalElapsedSeconds()-this.currentTime){
 		spawnNewCar(this.hud);
 		this.currentTime=this.game.time.totalElapsedSeconds();
-		this.spawnTime=Math.floor(Math.random()*3)+2;
+		this.spawnTime=Math.floor(Math.random()*10)+5;
 	}
 };
 //used to kill the car when it hits the bounds of the screen.
@@ -92,7 +93,7 @@ resetThis=function(car, hud){
 	car.destroy();
 };
 spawnNewCar=function(hud){
-	let spawnedCar=new Car(game, 40, 400, Math.floor(Math.random()*3),hud.takenArray,hud);
+	let spawnedCar=new Car(game, 40, 2436, Math.floor(Math.random()*3),hud.takenArray,hud);
 	hud.takenArray=spawnedCar.takenArray;
 	game.add.existing(spawnedCar);
 };

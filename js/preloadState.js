@@ -4,6 +4,7 @@ let preloadState = function() {
 };
 
 preloadState.prototype.preload = function() {
+	game.load.image("star", "assets/star.png");
     game.load.image("sedan", "assets/sedan_sprite_1.png");
 	game.load.image("bound_h", "assets/bound_h.png");
 	game.load.image("bound_v", "assets/bound_v.png");
@@ -12,6 +13,6 @@ preloadState.prototype.preload = function() {
 };
 
 preloadState.prototype.create = function() {
-    // game.state.start("Title");
-    game.state.start("Game"); // Uncomment phase you're testing
+    game.state.start("Title");
+    //game.state.start("Game"); // Uncomment phase you're testing
 };
