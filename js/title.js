@@ -16,7 +16,7 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 	this.plateIndex=Math.floor(Math.random() * this.plateArray.length);
 	while(this.takenArray[this.plateIndex]===true){
 		this.plateIndex=Math.floor(Math.random() * this.plateArray.length);
-	} 
+	}
 	this.takenArray[this.plateIndex]=true;
 	//change 5 to number of car models
 	switch(this.plateIndex%5){
@@ -63,7 +63,7 @@ Car.prototype.update=function(){
 	this.events.onOutOfBounds.add(resetThis, this);
 };
 
-//HUD is well, the HUD for phase 1. Also tracks if the player has found the right car or not. 
+//HUD is well, the HUD for phase 1. Also tracks if the player has found the right car or not.
 let HUD=function(game){
 	this.plateTxt=game.add.text(500, 2300, "");
 	this.plateTxt.addColor("#ffffff",0);
@@ -85,11 +85,10 @@ let titleState = function(){
 };
 
 titleState.prototype.create = function(){
-	//need to figure out how to have the cars spawn on top of the tile
 	let map = game.add.tilemap("TileMap");
 	map.addTilesetImage("tileset", "tileset");
 	let layer = map.createLayer("Tile Layer 1");
-	//layer.resizeWorld();
+
 	this.hud=new HUD(game);
 	this.currentTime=0;
 	this.spawnTime=Math.floor(Math.random()*10)+3;
