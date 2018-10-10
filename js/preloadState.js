@@ -11,6 +11,7 @@ preloadState.prototype.preload = function() {
     game.load.spritesheet("steering_wheel", "assets/steering_wheel.png", 468, 468);
 	game.load.spritesheet("player", "assets/patrol_car.png", 64, 118);
 	game.load.tilemap("TileMap", "assets/newmap.json", null, Phaser.Tilemap.TILED_JSON);
+	game.load.tilemap("TileMap2", "assets/newmap.json", null, Phaser.Tilemap.TILED_JSON);
 	game.load.image("newtiles", "assets/newtiles.png");
 };
 

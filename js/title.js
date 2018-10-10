@@ -84,7 +84,7 @@ let titleState = function(){
 };
 
 titleState.prototype.create = function(){
-	let map = game.add.tilemap("TileMap");
+	let map = game.add.tilemap("TileMap2");
 	map.addTilesetImage("newtiles", "newtiles");
 	let layer = map.createLayer("Tile Layer 1");
 	this.hud=new HUD(game);
