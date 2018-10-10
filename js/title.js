@@ -16,7 +16,7 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 	this.plateIndex=Math.floor(Math.random() * this.plateArray.length);
 	while(this.takenArray[this.plateIndex]===true){
 		this.plateIndex=Math.floor(Math.random() * this.plateArray.length);
-	} 
+	}
 	this.takenArray[this.plateIndex]=true;
 	//change 5 to number of car models
 	switch(this.plateIndex%5){
@@ -63,7 +63,7 @@ Car.prototype.update=function(){
 	this.events.onOutOfBounds.add(resetThis, this);
 };
 
-//HUD is well, the HUD for phase 1. Also tracks if the player has found the right car or not. 
+//HUD is well, the HUD for phase 1. Also tracks if the player has found the right car or not.
 let HUD=function(game){
 	this.plateTxt=game.add.text(500, 2300, "");
 	this.plateTxt.addColor("#ffffff",0);
@@ -80,25 +80,17 @@ let HUD=function(game){
 	this.win=false;
 };
 HUD.prototype.constructor=HUD;
-let carGroup;
 let titleState = function(){
 };
 
 titleState.prototype.create = function(){
-	//need to figure out how to have the cars spawn on top of the tile
-	var map;
-	var layer;
-	map = game.add.tilemap("TileMap");
+	let map = game.add.tilemap("TileMap");
 	map.addTilesetImage("newtiles", "newtiles");
-	layer = map.createLayer("Tile Layer 1");
-	layer.resizeWorld();
+	let layer = map.createLayer("Tile Layer 1");
 	this.hud=new HUD(game);
 	this.currentTime=0;
 	this.spawnTime=Math.floor(Math.random()*10)+3;
-	carGroup =game.add.group();
-	carGroup.add(layer);
 	spawnNewCar(this.hud);
-	console.log(layer.z);
 };
 titleState.prototype.update = function(){
 	this.hud.slider.y=2400;
@@ -135,9 +127,6 @@ spawnNewCar=function(hud){
 	hud.takenArray=spawnedCar.takenArray;
 	spawnedCar.scale.set(3,3);
 	car=game.add.existing(spawnedCar);
-	carGroup.add(car);
-	carGroup.sort('z',Phaser.Group.SORT_ASCENDING);
-	console.log(car.z);
 };
 clicked=function(car){
 	car.hud.plateTxt.visible=true;

@@ -5,13 +5,9 @@ let gameState = function(){
 
 gameState.prototype.create = function() {
     // Load in background assets TODO: Actually load in background assets
-    //game.stage.backgroundColor = '#943021';
-	var map;
-	var layer;
-	map = game.add.tilemap("TileMap");
+	let map = game.add.tilemap("TileMap");
 	map.addTilesetImage("newtiles", "newtiles");
-	layer = map.createLayer("Tile Layer 1");
-	layer.resizeWorld();
+	let layer = map.createLayer("Tile Layer 1");
 
     // Create the boundaries TODO: Make this adding in the boundaries, tilesets, etc...
 	this.bounds = game.add.group();
