@@ -89,7 +89,7 @@ titleState.prototype.create = function(){
 	let map = game.add.tilemap("TileMap");
 	map.addTilesetImage("tileset", "tileset");
 	let layer = map.createLayer("Tile Layer 1");
-	layer.resizeWorld();
+	//layer.resizeWorld();
 	this.hud=new HUD(game);
 	this.currentTime=0;
 	this.spawnTime=Math.floor(Math.random()*10)+3;
