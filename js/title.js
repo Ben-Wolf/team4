@@ -80,7 +80,6 @@ let HUD=function(game){
 	this.win=false;
 };
 HUD.prototype.constructor=HUD;
-let carGroup;
 let titleState = function(){
 };
 
@@ -92,10 +91,7 @@ titleState.prototype.create = function(){
 	this.hud=new HUD(game);
 	this.currentTime=0;
 	this.spawnTime=Math.floor(Math.random()*10)+3;
-	carGroup =game.add.group();
-	carGroup.add(layer);
 	spawnNewCar(this.hud);
-	console.log(layer.z);
 };
 titleState.prototype.update = function(){
 	this.hud.slider.y=2400;
@@ -132,9 +128,6 @@ spawnNewCar=function(hud){
 	hud.takenArray=spawnedCar.takenArray;
 	spawnedCar.scale.set(3,3);
 	car=game.add.existing(spawnedCar);
-	carGroup.add(car);
-	carGroup.sort('z',Phaser.Group.SORT_ASCENDING);
-	console.log(car.z);
 };
 clicked=function(car){
 	car.hud.plateTxt.visible=true;
