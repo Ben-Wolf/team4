@@ -9,7 +9,7 @@ gameState.prototype.create = function() {
 	var map;
 	var layer;
 	map = game.add.tilemap("TileMap");
-	map.addTilesetImage("tileset", "tileset");
+	map.addTilesetImage("newtiles", "newtiles");
 	layer = map.createLayer("Tile Layer 1");
 	layer.resizeWorld();
 

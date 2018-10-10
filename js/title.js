@@ -86,9 +86,11 @@ let titleState = function(){
 
 titleState.prototype.create = function(){
 	//need to figure out how to have the cars spawn on top of the tile
-	let map = game.add.tilemap("TileMap");
-	map.addTilesetImage("tileset", "tileset");
-	let layer = map.createLayer("Tile Layer 1");
+	var map;
+	var layer;
+	map = game.add.tilemap("TileMap");
+	map.addTilesetImage("newtiles", "newtiles");
+	layer = map.createLayer("Tile Layer 1");
 	layer.resizeWorld();
 	this.hud=new HUD(game);
 	this.currentTime=0;
