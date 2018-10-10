@@ -85,9 +85,8 @@ let titleState = function(){
 
 titleState.prototype.create = function(){
 	let map = game.add.tilemap("TileMap");
-	map.addTilesetImage("tileset", "tileset");
+	map.addTilesetImage("newtiles", "newtiles");
 	let layer = map.createLayer("Tile Layer 1");
-
 	this.hud=new HUD(game);
 	this.currentTime=0;
 	this.spawnTime=Math.floor(Math.random()*10)+3;
