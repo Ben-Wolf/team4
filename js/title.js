@@ -80,14 +80,23 @@ let HUD=function(game){
 	this.win=false;
 };
 HUD.prototype.constructor=HUD;
-
+let carGroup;
 let titleState = function(){
 };
+
 titleState.prototype.create = function(){
+	//need to figure out how to have the cars spawn on top of the tile
+	let map = game.add.tilemap("TileMap");
+	map.addTilesetImage("tileset", "tileset");
+	let layer = map.createLayer("Tile Layer 1");
+	layer.resizeWorld();
 	this.hud=new HUD(game);
 	this.currentTime=0;
 	this.spawnTime=Math.floor(Math.random()*10)+3;
+	carGroup =game.add.group();
+	carGroup.add(layer);
 	spawnNewCar(this.hud);
+	console.log(layer.z);
 };
 titleState.prototype.update = function(){
 	this.hud.slider.y=2400;
@@ -122,7 +131,11 @@ resetThis=function(car, hud){
 spawnNewCar=function(hud){
 	let spawnedCar=new Car(game, 40, 2436, Math.floor(Math.random()*3),hud.takenArray,hud);
 	hud.takenArray=spawnedCar.takenArray;
-	game.add.existing(spawnedCar);
+	spawnedCar.scale.set(3,3);
+	car=game.add.existing(spawnedCar);
+	carGroup.add(car);
+	carGroup.sort('z',Phaser.Group.SORT_ASCENDING);
+	console.log(car.z);
 };
 clicked=function(car){
 	car.hud.plateTxt.visible=true;
