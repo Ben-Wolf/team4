@@ -43,13 +43,21 @@ gameState.prototype.create = function() {
 	this.wheel.animations.add("reset_r", [3, 2, 1, 0], 10, false);
 	this.wheel.animations.add("reset_l", [6, 5, 4, 0], 10, false);
 
-    // Create the cars TODO: Change star sprites to cars.
+    // Create the cars
     this.cars = game.add.group();
     this.cars.enableBody = true;
     this.speeds = [350, 400, 550, 600];
     this.starts = [100, 440, 800];
     this.timers = [200, 120, 60];
     createCars(this.cars, this.starts, this.speeds, this.timers, 1);
+
+	//Create the animals
+	this.animals = game.add.group();
+	this.animals.enableBody = true;
+	this.animalSpeeds = [100, 150, 200, 250];
+	this.animalStarts = [100, 440, 800];
+	this.animalTimers = [200, 120, 60];
+	createAnimals(this.animals, this.animalStarts, this.animalSpeeds, this.animalTimers, 1);
 
     // Create the player TODO: Change Murph to car
     this.player = game.add.sprite(200, game.world.height - 950, "player");
@@ -75,10 +83,13 @@ gameState.prototype.update = function() {
     // Collisions
     game.physics.arcade.collide(this.bounds, this.player);
     game.physics.arcade.collide(this.cars, this.cars);
+	game.physics.arcade.collide(this.animals, this.player);
 
     // Overlaps
 	game.physics.arcade.overlap(this.bounds, this.cars, this.removeCar, null, this);
+	game.physics.arcade.overlap(this.bounds, this.animals, this.removeAnimal, null, this);
     game.physics.arcade.overlap(this.player, this.cars, this.crash, null, this);
+	game.physics.arcade.overlap(this.player, this.animals, this.crash, null, this)
 
 	// Apply speed multipliers
 	this.speed_multiplier = Math.floor((this.d2p_since_last_crash - this.d2p) / 500) + 1;
@@ -94,6 +105,9 @@ gameState.prototype.update = function() {
 
     // Procedural Car Generation
     createCars(this.cars, this.starts, this.speeds, this.timers, this.speed_multiplier);
+
+	//Procedural Animal Generation
+	createAnimals(this.animals, this.animalStarts, this.animalSpeeds, this.animalTimers, this.speed_multiplier);
 
     // Turn wheel
     this.player.body.velocity.x = 0;
@@ -119,12 +133,17 @@ gameState.prototype.removeCar = function(boundary, car) {
     car.kill();
 };
 
+gameState.prototype.removeAnimal = function(boundary, animal) {
+    animal.kill();
+};
+
 // Player crash
-gameState.prototype.crash = function(player, car) {
+gameState.prototype.crash = function(player, object) {
 	this.d2p += 500;
 	this.d2p_since_last_crash = this.d2p;
 	this.speed_multiplier = 1;
     this.cars.forEach(function (c) { c.kill(); });
+	this.animals.forEach(function (a) { a.kill(); });
 };
 
 gameState.prototype.turnRight = function() {
@@ -153,6 +172,19 @@ function createCars(cars, starts, speeds, timers, speed_m) {
             let car = cars.create(starts[i], 65, "sedan");
             car.body.velocity.y = speeds[getRandomInt(4)] * speed_m;
             car.scale.set(3,3);
+        } else {
+            timers[i]--;
+        }
+    }
+};
+
+function createAnimals(animals, starts, speeds, timers, speed_m) {
+    for (let i = 0; i < 3; ++i) {
+        if (timers[i] === 0) {
+            timers[i] = 250/speed_m;
+            let animal = animals.create(65, starts[i], "bird");
+            animal.body.velocity.x = - speeds[getRandomInt(4)] * speed_m;
+            animal.scale.set(3,3);
         } else {
             timers[i]--;
         }
