@@ -186,7 +186,7 @@ movePlayer=function(player){
 	}
 	else{
 		player.angle=180;
-		player.y+=3;
+		player.y+=5;
 	}
 	if(player.y>=2436-132-118){
 		game.state.start("Game");
