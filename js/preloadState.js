@@ -8,7 +8,7 @@ preloadState.prototype.preload = function() {
 	// SEDANS
 	game.load.image("sedan", "assets/sedan_white.png");
 	game.load.image("sedan_white", "assets/sedan_white.png");
-    game.load.image("sedan_red", "assets/sedan_red.png");
+  game.load.image("sedan_red", "assets/sedan_red.png");
 	game.load.image("sedan_gray", "assets/sedan_gray.png");
 	// TRUCKS
 	game.load.image("truck_white", "assets/truck_white.png");
@@ -21,6 +21,7 @@ preloadState.prototype.preload = function() {
 	game.load.image("cargo_green", "assets/cargo_green.png");
 	game.load.image("cargo_red", "assets/cargo_red.png");
 	// Boundaries
+	game.load.image("bird", "assets/bird.png");
 	game.load.image("bound_h", "assets/bound_h.png");
 	game.load.image("bound_v", "assets/bound_v.png");
 	// HUD
