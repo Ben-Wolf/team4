@@ -45,6 +45,7 @@ gameState.prototype.create = function() {
 	this.wheel.animations.add("reset_l", [6, 5, 4, 0], 10, false);
 
     // Create the cars
+	this.perp = null;
     this.cars = game.add.group();
     this.cars.enableBody = true;
     this.speeds = [350, 400, 550, 600];
@@ -71,7 +72,7 @@ gameState.prototype.create = function() {
 	this.player.body.collideWorldBounds = true;
 
     // Distance to perp TODO: Implement more, based on speed
-    this.d2p = 5000;
+    this.d2p = 2000;
     this.d2p_text = game.add.text(0, 1900, this.d2p + "m from Perp", style);
 
 	// Speed modifiers
@@ -94,16 +95,17 @@ gameState.prototype.update = function() {
 	game.physics.arcade.overlap(this.bounds, this.cars, this.removeCar, null, this);
 	game.physics.arcade.overlap(this.bounds, this.animals, this.removeAnimal, null, this);
     game.physics.arcade.overlap(this.player, this.cars, this.crash, null, this);
-	game.physics.arcade.overlap(this.player, this.animals, this.crash, null, this)
+	game.physics.arcade.overlap(this.player, this.animals, this.crash, null, this);
+	game.physics.arcade.overlap(this.player, this.perp, this.win, null, this);
 
 	// Apply speed multipliers
 	this.speed_multiplier = Math.floor((this.d2p_since_last_crash - this.d2p) / 500) + 1;
 	this.spm_text.setText(this.speed_multiplier + " = Multiplier!");
 	this.d2p -= (0.5 * this.speed_multiplier);
 
-    // TODO: Create and implement win state
-    if (this.d2p <= 0) {
-        this.d2p_text.setText("You win...");
+    //
+    if (this.d2p <= 500) {
+		spawnPerp();
     } else {
         this.d2p_text.setText(Math.round(this.d2p) + "m from Perp");
     }
@@ -145,7 +147,7 @@ gameState.prototype.removeAnimal = function(boundary, animal) {
 
 // Player crash
 gameState.prototype.crash = function(player, object) {
-	this.d2p += 500;
+	this.d2p += 200;
 	this.d2p_since_last_crash = this.d2p;
 	this.speed_multiplier = 1;
     this.cars.forEach(function (c) { c.kill(); });
@@ -169,6 +171,12 @@ gameState.prototype.turnLeft = function() {
 function inBounds(xIn, yIn, b) {
     return xIn > b.x && xIn < (b.x + b.width) &&
            yIn > b.y && yIn < (b.y + b.height);
+};
+
+function spawnPerp(perp, cars) {
+	perp = cars.create(start[2], 65, "sedan_red");
+	car.body.velocity.y = 50;
+	car.scale.set(1.5, 1.5);
 };
 
 function createCars(cars, starts, speeds, timers, speed_m, s, t, c) {
