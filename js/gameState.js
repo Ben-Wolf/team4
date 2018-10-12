@@ -19,7 +19,7 @@ gameState.prototype.create = function() {
 	bound_l.scale.set(2, 6.5);
 	bound_l.body.immovable = true;
 	bound_l.tint = 0x000000;
-	let bound_r = this.bounds.create(900, 0, "bound_v");
+	let bound_r = this.bounds.create(860, 0, "bound_v");
 	bound_r.scale.set(2, 6.5);
 	bound_r.body.immovable = true;
 	bound_r.tint = 0x000000;
@@ -27,6 +27,7 @@ gameState.prototype.create = function() {
     // Load in background assets
 	let map = game.add.tilemap("TileMap2");
 	map.addTilesetImage("newtiles", "newtiles");
+	map.addTilesetImage("curb", "curb");
 	let layer = map.createLayer("Tile Layer 1");
 
 	// Add HUD Area
