@@ -69,10 +69,10 @@ Car.prototype.update=function(){
 		this.moveVelo=3;
 	}
 	this.checkWorldBounds = true;
-	if(this.moveVelo>0&&this.y>=2436-132-118){
+	/*if(this.moveVelo>0&&this.y>=2436-132-118){
 		game.state.start("Game");
-	}
-	else if(this.moveVelo>0&&this.y>=2200-132-118){
+	}*/
+	if(this.moveVelo>0&&this.y>=2200-132-118){
 		this.hud.pastPoint=true;
 	}
 	this.events.onOutOfBounds.add(resetThis, this);
@@ -187,5 +187,8 @@ movePlayer=function(player){
 	else{
 		player.angle=180;
 		player.y+=3;
+	}
+	if(player.y>=2436-132-118){
+		game.state.start("Game");
 	}
 }
