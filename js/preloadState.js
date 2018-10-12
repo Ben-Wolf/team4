@@ -36,6 +36,6 @@ preloadState.prototype.preload = function() {
 };
 
 preloadState.prototype.create = function() {
-    // game.state.start("Title");
-    game.state.start("Game"); // Uncomment phase you're testing
+     game.state.start("Title");
+    //game.state.start("Game"); // Uncomment phase you're testing
 };
