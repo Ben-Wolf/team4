@@ -43,26 +43,26 @@ gameState.prototype.create = function() {
 	this.wheel.animations.add("reset_r", [3, 2, 1, 0], 10, false);
 	this.wheel.animations.add("reset_l", [6, 5, 4, 0], 10, false);
 
-    // Create the cars TODO: Change star sprites to cars.
+    // Create the cars
     this.cars = game.add.group();
     this.cars.enableBody = true;
     this.speeds = [350, 400, 550, 600];
     this.starts = [150, 310, 450, 600, 770];
-    this.timers = [200, 120, 60, 90, 150];
+    this.timers = [300, 130, 240, 60, 200];
 	this.sedans = ["sedan_red", "sedan_gray", "sedan_white"];
 	this.trucks = ["truck_red", "truck_gray", "truck_black", "truck_white"];
 	this.cargos = ["cargo_red", "cargo_gray", "cargo_green", "cargo_white"];
     createCars(this.cars, this.starts, this.speeds, this.timers, 1,
 				this.sedans, this.trucks, this.cargos);
 
-    // Create the player TODO: Change Murph to car
+    // Create the player
     this.player = game.add.sprite(200, game.world.height - 950, "player");
     this.player.scale.set(1.5, 1.5);
 	game.physics.arcade.enable(this.player);
 	this.player.body.collideWorldBounds = true;
 
-    // Distance to perp TODO: Implement more, based on speed
-    this.d2p = 5000;
+    // Distance to perp
+    this.d2p = 3000;
     this.d2p_text = game.add.text(0, 1900, this.d2p + "m from Perp", style);
 
 	// Speed modifiers
@@ -126,7 +126,7 @@ gameState.prototype.removeCar = function(boundary, car) {
 
 // Player crash
 gameState.prototype.crash = function(player, car) {
-	this.d2p += 500;
+	this.d2p += 200;
 	this.d2p_since_last_crash = this.d2p;
 	this.speed_multiplier = 1;
     this.cars.forEach(function (c) { c.kill(); });
