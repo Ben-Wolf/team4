@@ -44,6 +44,7 @@ gameState.prototype.create = function() {
 	this.wheel.animations.add("reset_l", [6, 5, 4, 0], 10, false);
 
     // Create the cars
+	this.perp = null;
     this.cars = game.add.group();
     this.cars.enableBody = true;
     this.speeds = [350, 400, 550, 600];
@@ -93,16 +94,16 @@ gameState.prototype.update = function() {
 	game.physics.arcade.overlap(this.bounds, this.cars, this.removeCar, null, this);
 	game.physics.arcade.overlap(this.bounds, this.animals, this.removeAnimal, null, this);
     game.physics.arcade.overlap(this.player, this.cars, this.crash, null, this);
-	game.physics.arcade.overlap(this.player, this.animals, this.crash, null, this)
+	game.physics.arcade.overlap(this.player, this.animals, this.crash, null, this);
+	game.physics.arcade.overlap(this.player, this.perp. this.win, null, this);
 
 	// Apply speed multipliers
 	this.speed_multiplier = Math.floor((this.d2p_since_last_crash - this.d2p) / 500) + 1;
 	this.spm_text.setText(this.speed_multiplier + " = Multiplier!");
 	this.d2p -= (0.5 * this.speed_multiplier);
 
-    // TODO: Create and implement win state
-    if (this.d2p <= 0) {
-        this.d2p_text.setText("You win...");
+    if (this.d2p <= 500 && this.perp === null) {
+		spawnPerp();
     } else {
         this.d2p_text.setText(Math.round(this.d2p) + "m from Perp");
     }
@@ -142,6 +143,11 @@ gameState.prototype.removeAnimal = function(boundary, animal) {
     animal.kill();
 };
 
+// Catch perp
+gameState.prototype.crash = function(player, perp) {
+	// game.state.start("Win");
+}
+
 // Player crash
 gameState.prototype.crash = function(player, car) {
 	this.d2p += 200;
@@ -169,6 +175,12 @@ function inBounds(xIn, yIn, b) {
     return xIn > b.x && xIn < (b.x + b.width) &&
            yIn > b.y && yIn < (b.y + b.height);
 };
+
+function spawnPerp(cars) {
+	perp = cars.create(450, 65, "sedan_red");
+	car.body.velocity.t = 50;
+	car.set.scale(1.5, 1.5);
+}
 
 function createCars(cars, starts, speeds, timers, speed_m, s, t, c) {
     for (let i = 0; i < starts.length; ++i) {

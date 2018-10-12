@@ -8,7 +8,7 @@ preloadState.prototype.preload = function() {
 	// SEDANS
 	game.load.image("sedan", "assets/sedan_white.png");
 	game.load.image("sedan_white", "assets/sedan_white.png");
-  game.load.image("sedan_red", "assets/sedan_red.png");
+  	game.load.image("sedan_red", "assets/sedan_red.png");
 	game.load.image("sedan_gray", "assets/sedan_gray.png");
 	// TRUCKS
 	game.load.image("truck_white", "assets/truck_white.png");
