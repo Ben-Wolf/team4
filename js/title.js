@@ -21,27 +21,27 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 	//change 5 to number of car models
 	switch(this.plateIndex%5){
 		case 0:
-		Phaser.Sprite.call(this, game, x+100*lane, y, 'sedan');
+		Phaser.Sprite.call(this, game, x+140*lane, y, 'sedan');
 		this.make='sedan';
 		this.carColor='red';
 		break;
 		case 1:
-		Phaser.Sprite.call(this, game, x+100*lane, y, 'sedan');
+		Phaser.Sprite.call(this, game, x+140*lane, y, 'sedan');
 		this.make='sedan';
 		this.carColor='red';
 		break;
 		case 2:
-		Phaser.Sprite.call(this, game, x+100*lane, y, 'sedan');
+		Phaser.Sprite.call(this, game, x+140*lane, y, 'sedan');
 		this.make='sedan';
 		this.carColor='red';
 		break;
 		case 3:
-		Phaser.Sprite.call(this, game, x+100*lane, y, 'sedan');
+		Phaser.Sprite.call(this, game, x+140*lane, y, 'sedan');
 		this.make='sedan';
 		this.carColor='red';
 		break;
 		case 4:
-		Phaser.Sprite.call(this, game, x+100*lane, y, 'sedan');
+		Phaser.Sprite.call(this, game, x+140*lane, y, 'sedan');
 		this.make='sedan';
 		this.carColor='red';
 		break;
@@ -84,9 +84,11 @@ let titleState = function(){
 };
 
 titleState.prototype.create = function(){
-	let map = game.add.tilemap("TileMap");
+	let map = game.add.tilemap("TileMap2");
 	map.addTilesetImage("newtiles", "newtiles");
 	let layer = map.createLayer("Tile Layer 1");
+	let player=game.add.sprite(882,1218,"player");
+	player.angle=-90;
 	this.hud=new HUD(game);
 	this.currentTime=0;
 	this.spawnTime=Math.floor(Math.random()*10)+3;
@@ -123,9 +125,9 @@ resetThis=function(car, hud){
 	car.destroy();
 };
 spawnNewCar=function(hud){
-	let spawnedCar=new Car(game, 40, 2436, Math.floor(Math.random()*3),hud.takenArray,hud);
+	let spawnedCar=new Car(game, 178, 2436, Math.floor(Math.random()*5),hud.takenArray,hud);
 	hud.takenArray=spawnedCar.takenArray;
-	spawnedCar.scale.set(3,3);
+	//spawnedCar.scale.set(3,3);
 	car=game.add.existing(spawnedCar);
 };
 clicked=function(car){
