@@ -24,26 +24,26 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 		case 0:
 		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan');
 		this.make='Sedan';
-		this.carColor='Red';
+		this.carColor='White';
 		break;
 		case 1:
-		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan');
+		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan_red');
 		this.make='Sedan';
 		this.carColor='Red';
 		break;
 		case 2:
-		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan');
+		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan_gray');
 		this.make='Sedan';
-		this.carColor='Red';
+		this.carColor='Grey';
 		break;
 		case 3:
-		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan');
-		this.make='Sedan';
-		this.carColor='Red';
+		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'truck_white');
+		this.make='Truck';
+		this.carColor='White';
 		break;
 		case 4:
-		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan');
-		this.make='Sedan';
+		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'cargo_red');
+		this.make='Cargo';
 		this.carColor='Red';
 		break;
 	}
@@ -86,7 +86,7 @@ let HUD=function(game){
 	this.plateTxt.visible=false;
 	this.wantTxt=game.add.text(500, this.plateTxt.y-150, "Looking for: WIN 2359\nMake: Sedan\nColor: Red",style);
 	this.wantTxt.addColor("#ffffff",0);
-	this.slider=game.add.sprite(500,550,"star");
+	this.slider=game.add.sprite(500,550,"bird");
 	this.slider.inputEnabled=true;
 	//rectangle is supposed to be bounds, it isn't...
 	this.slider.input.enableDrag(false,false,false, Phaser.Rectangle(500, 550, 100, 100));
@@ -150,7 +150,7 @@ resetThis=function(car, hud){
 	car.destroy();
 };
 spawnNewCar=function(hud){
-	let spawnedCar=new Car(game, 178, 2436-132-118, Math.floor(Math.random()*5),hud.takenArray,hud);
+	let spawnedCar=new Car(game,32 , 2436-132-118, Math.floor(Math.random()*5),hud.takenArray,hud);
 	hud.takenArray=spawnedCar.takenArray;
 	//spawnedCar.scale.set(3,3);
 	car=game.add.existing(spawnedCar);
@@ -181,7 +181,7 @@ transitionAni=function(car){
 	//}
 }
 movePlayer=function(player){
-	if(player.x>=882-140+118/2){
+	if(player.x>=882-140+118/2-118){
 		player.x-=3;
 	}
 	else{
