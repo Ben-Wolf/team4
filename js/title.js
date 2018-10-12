@@ -102,7 +102,7 @@ let titleState = function(){
 
 titleState.prototype.create = function(){
 	this.foundCar=false;
-	let map = game.add.tilemap("TileMap2");
+	let map = game.add.tilemap("TileMap1");
 	map.addTilesetImage("newtiles", "newtiles");
 	let layer = map.createLayer("Tile Layer 1");
 	this.player=game.add.sprite(882+118/2,1218,"player");
