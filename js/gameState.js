@@ -4,12 +4,13 @@ let gameState = function(){
 };
 
 gameState.prototype.create = function() {
-    // Load in background assets TODO: Actually load in background assets
+    // Load in background assets
+
 	let map = game.add.tilemap("TileMap");
 	map.addTilesetImage("newtiles", "newtiles");
 	let layer = map.createLayer("Tile Layer 1");
 
-    // Create the boundaries TODO: Make this adding in the boundaries, tilesets, etc...
+    // Create the boundaries
 	this.bounds = game.add.group();
 	this.bounds.enableBody = true;
 	let bound_b = this.bounds.create(0, game.world.height - 600, "bound_h");
@@ -47,13 +48,13 @@ gameState.prototype.create = function() {
     this.cars = game.add.group();
     this.cars.enableBody = true;
     this.speeds = [350, 400, 550, 600];
-    this.starts = [100, 440, 800];
-    this.timers = [200, 120, 60];
+    this.starts = [150, 320, 460, 600, 770];
+    this.timers = [200, 120, 60, 90, 150];
     createCars(this.cars, this.starts, this.speeds, this.timers, 1);
 
     // Create the player TODO: Change Murph to car
     this.player = game.add.sprite(200, game.world.height - 950, "player");
-    this.player.scale.set(3, 3);
+    this.player.scale.set(1.5, 1.5);
 	game.physics.arcade.enable(this.player);
 	this.player.body.collideWorldBounds = true;
 
@@ -147,12 +148,12 @@ function inBounds(xIn, yIn, b) {
 };
 
 function createCars(cars, starts, speeds, timers, speed_m) {
-    for (let i = 0; i < 3; ++i) {
+    for (let i = 0; i < starts.length; ++i) {
         if (timers[i] === 0) {
-            timers[i] = 250/speed_m;
+            timers[i] = 200/speed_m;
             let car = cars.create(starts[i], 65, "sedan");
             car.body.velocity.y = speeds[getRandomInt(4)] * speed_m;
-            car.scale.set(3,3);
+            car.scale.set(1.5,1.5);
         } else {
             timers[i]--;
         }
