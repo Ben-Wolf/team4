@@ -5,7 +5,7 @@ let gameState = function(){
 
 gameState.prototype.create = function() {
     // Load in background assets TODO: Actually load in background assets
-	let map = game.add.tilemap("TileMap");
+	let map = game.add.tilemap("TileMap2");
 	map.addTilesetImage("newtiles", "newtiles");
 	let layer = map.createLayer("Tile Layer 1");
 
