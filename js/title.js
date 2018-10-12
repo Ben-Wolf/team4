@@ -22,31 +22,32 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 	//change 5 to number of car models
 	switch(this.plateIndex%5){
 		case 0:
-		Phaser.Sprite.call(this, game, x+140*lane, y, 'sedan');
+		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan');
 		this.make='Sedan';
 		this.carColor='Red';
 		break;
 		case 1:
-		Phaser.Sprite.call(this, game, x+140*lane, y, 'sedan');
+		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan');
 		this.make='Sedan';
 		this.carColor='Red';
 		break;
 		case 2:
-		Phaser.Sprite.call(this, game, x+140*lane, y, 'sedan');
+		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan');
 		this.make='Sedan';
 		this.carColor='Red';
 		break;
 		case 3:
-		Phaser.Sprite.call(this, game, x+140*lane, y, 'sedan');
+		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan');
 		this.make='Sedan';
 		this.carColor='Red';
 		break;
 		case 4:
-		Phaser.Sprite.call(this, game, x+140*lane, y, 'sedan');
+		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan');
 		this.make='Sedan';
 		this.carColor='Red';
 		break;
 	}
+	this.anchor.set(.5,.5);
 	this.inputEnabled=true;
 	this.events.onInputDown.add(clicked, this);
 	if(this.plateIndex===1){
@@ -60,9 +61,19 @@ Car.prototype.update=function(){
 //car movement should be defined in here
 	this.y+=this.moveVelo;
 	//this.txt.y=this.y;
+	if(this.moveVelo===0&&this.angle>-179){
+		this.angle += 5;
+		console.log(this.angle);
+	}
+	else if(this.moveVelo===0){
+		this.moveVelo=3;
+	}
 	this.checkWorldBounds = true;
 	if(this.moveVelo>0&&this.y>=2436-132-118){
 		game.state.start("Game");
+	}
+	else if(this.moveVelo>0&&this.y>=2200-132-118){
+		this.hud.pastPoint=true;
 	}
 	this.events.onOutOfBounds.add(resetThis, this);
 };
@@ -83,6 +94,7 @@ let HUD=function(game){
 	this.slider.events.onDragStop.add(goBack, this);
 	this.takenArray=[]
 	this.win=false;
+	this.pastPoint=false;
 };
 HUD.prototype.constructor=HUD;
 let titleState = function(){
@@ -128,7 +140,7 @@ titleState.prototype.update = function(){
 		this.currentTime=this.game.time.totalElapsedSeconds();
 		this.spawnTime=Math.floor(Math.random()*10)+3;
 	}
-	if(this.foundCar){
+	if(this.foundCar&&this.hud.pastPoint){
 		movePlayer(this.player);
 	}
 };
@@ -165,11 +177,11 @@ transitionAni=function(car){
 		//car.angle += 90;
 	//}
 	//if(car.angle===180){
-		car.moveVelo=3;
+		car.moveVelo=0;
 	//}
 }
 movePlayer=function(player){
-	if(player.x>=882-140){
+	if(player.x>=882-140+118/2){
 		player.x-=3;
 	}
 	else{
