@@ -31,32 +31,6 @@
          "tilecount":9,
          "tileheight":144,
          "tilewidth":144
-        }, 
-        {
-         "columns":3,
-         "firstgid":10,
-         "image":"tileset.png",
-         "imageheight":432,
-         "imagewidth":432,
-         "margin":0,
-         "name":"tileset",
-         "spacing":0,
-         "tilecount":9,
-         "tileheight":144,
-         "tilewidth":144
-        }, 
-        {
-         "columns":3,
-         "firstgid":19,
-         "image":"newtiles.png",
-         "imageheight":432,
-         "imagewidth":432,
-         "margin":0,
-         "name":"newtiles",
-         "spacing":0,
-         "tilecount":9,
-         "tileheight":144,
-         "tilewidth":144
         }],
  "tilewidth":144,
  "type":"map",
