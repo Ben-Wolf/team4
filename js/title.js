@@ -22,33 +22,41 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 	//uncomment the line below to test the wanted car
 	//this.plateIndex=1;
 	//change 5 to number of car models
-	switch(this.plateIndex%5){
-		case 0:
-		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan');
-		this.make='Sedan';
-		this.carColor='White';
-		break;
-		case 1:
-		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan_red');
+	//type arrays taken from gameState
+	sedan = ["sedan_red", "sedan_gray", "sedan_white"];
+	truck = ["truck_red", "truck_gray", "truck_black", "truck_white"];
+	cargo = ["cargo_red", "cargo_gray", "cargo_green", "cargo_white"];
+	let type;
+	if(this.plateIndex===1){
+		type='sedan_red';
 		this.make='Sedan';
 		this.carColor='Red';
-		break;
-		case 2:
-		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan_gray');
-		this.make='Sedan';
-		this.carColor='Grey';
-		break;
-		case 3:
-		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'truck_white');
-		this.make='Truck';
-		this.carColor='White';
-		break;
-		case 4:
-		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'cargo_red');
-		this.make='Cargo';
-		this.carColor='Red';
-		break;
 	}
+	else{
+		let randMake=Math.floor(Math.random()*3);
+		if(randMake===0){
+			this.make='Sedan';
+			randMake=Math.floor(Math.random()*3);
+			type=sedan[randMake];
+			this.carColor=sedan[randMake].slice(6);
+			this.carColor=this.carColor.charAt(0).toUpperCase()+this.carColor.substring(1);
+		}
+		else if(randMake===1){
+			this.make='Truck';
+			randMake=Math.floor(Math.random()*3);
+			type=truck[randMake];
+			this.carColor=truck[randMake].slice(6);
+			this.carColor=this.carColor.charAt(0).toUpperCase()+this.carColor.substring(1);
+		}
+		else{
+			this.make='Cargo';
+			randMake=Math.floor(Math.random()*3);
+			type=truck[randMake];
+			this.carColor=cargo[randMake].slice(6);
+			this.carColor=this.carColor.charAt(0).toUpperCase()+this.carColor.substring(1);
+		}
+	}
+	Phaser.Sprite.call(this, game, x+140*lane+32, y, type);
 	this.anchor.set(.5,.5);
 	this.inputEnabled=true;
 	this.events.onInputDown.add(clicked, this);
@@ -131,6 +139,9 @@ titleState.prototype.update = function(){
 			//movePlayer(this.player);
 			//console.log(this.hud.winCar.y);
 		}
+	}
+	if(!this.hud.win){
+		this.foundCar=false;
 	}
 	if(this.spawnTime<=this.game.time.totalElapsedSeconds()-this.currentTime&&!this.foundCar){
 		spawnNewCar(this.hud);
