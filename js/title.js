@@ -19,6 +19,8 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 		this.plateIndex=Math.floor(Math.random() * this.plateArray.length);
 	}
 	this.takenArray[this.plateIndex]=true;
+	//uncomment the line below to test the wanted car
+	//this.plateIndex=1;
 	//change 5 to number of car models
 	switch(this.plateIndex%5){
 		case 0:
@@ -61,18 +63,12 @@ Car.prototype.update=function(){
 //car movement should be defined in here
 	this.y+=this.moveVelo;
 	//this.txt.y=this.y;
-	if(this.moveVelo===0&&this.angle>-179){
-		this.angle += 5;
-		console.log(this.angle);
-	}
-	else if(this.moveVelo===0){
-		this.moveVelo=3;
-	}
+	
 	this.checkWorldBounds = true;
 	/*if(this.moveVelo>0&&this.y>=2436-132-118){
 		game.state.start("Game");
 	}*/
-	if(this.moveVelo>0&&this.y>=2200-132-118){
+	if(this.moveVelo<-3&&this.y<=400){
 		this.hud.pastPoint=true;
 	}
 	this.events.onOutOfBounds.add(resetThis, this);
@@ -178,18 +174,18 @@ transitionAni=function(car){
 		//car.angle += 90;
 	//}
 	//if(car.angle===180){
-		car.moveVelo=0;
+		car.moveVelo=-8;
 	//}
 }
 movePlayer=function(player){
 	if(player.x>=882-140+118/2-118){
-		player.x-=3;
+		player.x-=5;
 	}
 	else{
-		player.angle=180;
-		player.y+=5;
+		player.angle=0;
+		player.y-=8;
 	}
-	if(player.y>=2436-132-118){
+	if(player.y<=10){
 		game.state.start("Game");
 	}
 }
