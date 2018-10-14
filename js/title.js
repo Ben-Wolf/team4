@@ -10,7 +10,7 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 	this.isWanted=false;
 	this.takenArray=takenArray;
 	//list of possible license plates
-	this.plateArray=["TGH 5675", "WIN 2359", "ADE 6577", "HHT 6054", "LMB 1653", "KWQ 9424", "PWF 0248"];
+	this.plateArray=["MD1", "BA2", "SO3", "SR4", "GL5", "SF6", "BW7"];
 	if(this.takenArray.length===0){
 		this.takenArray.fill(0, this.plateArray.length,false);
 	}
@@ -22,33 +22,39 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 	//uncomment the line below to test the wanted car
 	//this.plateIndex=1;
 	//change 5 to number of car models
-	switch(this.plateIndex%5){
-		case 0:
-		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan');
-		this.make='Sedan';
-		this.carColor='White';
-		break;
-		case 1:
-		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan_red');
+	//type arrays taken from gameState
+	sedan = ["sedan_red", "sedan_gray", "sedan_white"];
+	truck = ["truck_red", "truck_gray", "truck_white"];
+	cargo = ["cargo_red", "cargo_gray", "cargo_white"];
+	let type;
+	if(this.plateIndex===1){
+		type='sedan_red';
 		this.make='Sedan';
 		this.carColor='Red';
-		break;
-		case 2:
-		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'sedan_gray');
-		this.make='Sedan';
-		this.carColor='Grey';
-		break;
-		case 3:
-		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'truck_white');
-		this.make='Truck';
-		this.carColor='White';
-		break;
-		case 4:
-		Phaser.Sprite.call(this, game, x+140*lane+32, y, 'cargo_red');
-		this.make='Cargo';
-		this.carColor='Red';
-		break;
 	}
+	else{
+		let randColor=Math.floor(Math.random()*3);
+		let randMake=Math.floor(Math.random()*3);
+		if(randMake===0){
+			this.make='Sedan';
+			type=sedan[randColor];
+			this.carColor=sedan[randColor].slice(6);
+			this.carColor=this.carColor.charAt(0).toUpperCase()+this.carColor.substring(1);
+		}
+		else if(randMake===1){
+			this.make='Truck';
+			type=truck[randColor];
+			this.carColor=truck[randColor].slice(6);
+			this.carColor=this.carColor.charAt(0).toUpperCase()+this.carColor.substring(1);
+		}
+		else{
+			this.make='Cargo';
+			type=cargo[randColor];
+			this.carColor=cargo[randColor].slice(6);
+			this.carColor=this.carColor.charAt(0).toUpperCase()+this.carColor.substring(1);
+		}
+	}
+	Phaser.Sprite.call(this, game, x+140*lane+32, y, type);
 	this.anchor.set(.5,.5);
 	this.inputEnabled=true;
 	this.events.onInputDown.add(clicked, this);
@@ -77,10 +83,7 @@ Car.prototype.update=function(){
 //HUD is well, the HUD for phase 1. Also tracks if the player has found the right car or not.
 let HUD=function(game){
 	let style = { font: "32px Arial", fill: "#ff0044", align: "center", backgroundColor: "#ff0000" };
-	this.plateTxt=game.add.text(500, 150, "",style);
-	this.plateTxt.addColor("#ffffff",0);
-	this.plateTxt.visible=false;
-	this.wantTxt=game.add.text(500, this.plateTxt.y-150, "Looking for: WIN 2359\nMake: Sedan\nColor: Red",style);
+	this.wantTxt=game.add.text(500, 12, "Looking for: BA2\nMake: Sedan\nColor: Red",style);
 	this.wantTxt.addColor("#ffffff",0);
 	this.slider=game.add.sprite(500,550,"bird");
 	this.slider.inputEnabled=true;
@@ -91,24 +94,34 @@ let HUD=function(game){
 	this.takenArray=[]
 	this.win=false;
 	this.pastPoint=false;
+	this.makeGauge=game.add.sprite(500,2000,"alert");
+	this.colorGauge=game.add.sprite(300,2000,"alert");
+	this.colorGauge.frame=7;
+	this.plateGauge=game.add.sprite(100,2000,"alert");
+	this.plateGauge.frame=14;
+	//group.add(this.makeGauge);
+	//group.add(this.colorGauge);
 };
 HUD.prototype.constructor=HUD;
 let titleState = function(){
 };
 
 titleState.prototype.create = function(){
+	this.depthGroup=game.add.group();
 	this.foundCar=false;
 	let map = game.add.tilemap("TileMap1");
 	map.addTilesetImage("newtiles", "newtiles");
 	map.addTilesetImage("curb", "curb");
-	let layer = map.createLayer("Tile Layer 1");
+	let layer = map.createLayer("Tile Layer 1")
+	this.depthGroup.add(layer);
 	this.player=game.add.sprite(882+118/2,1218,"player");
 	this.player.anchor.set(.5,.5);
 	this.player.angle=-90;
-	this.hud=new HUD(game);
+	this.hud=new HUD(game, this.depthGroup);
 	this.currentTime=0;
 	this.spawnTime=Math.floor(Math.random()*10)+3;
-	spawnNewCar(this.hud);
+	this.transitionStarted=false;
+	spawnNewCar(this.hud, this.depthGroup);
 };
 titleState.prototype.update = function(){
 	this.hud.slider.y=2400;
@@ -127,17 +140,21 @@ titleState.prototype.update = function(){
 	if(this.hud.slider.x>=580){
 		if(this.hud.win){
 			transitionAni(this.hud.winCar);
+			this.transitionStarted=true;
 			this.foundCar=true;
 			//movePlayer(this.player);
 			//console.log(this.hud.winCar.y);
 		}
 	}
+	if(!this.hud.win&&!this.transitionStarted){
+		this.foundCar=false;
+	}
 	if(this.spawnTime<=this.game.time.totalElapsedSeconds()-this.currentTime&&!this.foundCar){
-		spawnNewCar(this.hud);
+		spawnNewCar(this.hud, this.depthGroup);
 		this.currentTime=this.game.time.totalElapsedSeconds();
 		this.spawnTime=Math.floor(Math.random()*10)+3;
 	}
-	if(this.foundCar&&this.hud.pastPoint){
+	if(this.transitionStarted&&this.hud.pastPoint){
 		movePlayer(this.player);
 	}
 };
@@ -146,15 +163,15 @@ resetThis=function(car, hud){
 	car.hud.takenArray[car.plateIndex]=false;
 	car.destroy();
 };
-spawnNewCar=function(hud){
+spawnNewCar=function(hud, group){
 	let spawnedCar=new Car(game,32 , 2436-132-118, Math.floor(Math.random()*5),hud.takenArray,hud);
 	hud.takenArray=spawnedCar.takenArray;
 	//spawnedCar.scale.set(3,3);
 	car=game.add.existing(spawnedCar);
+	group.add(car,false,1);
+	group.sort('z',Phaser.Group.SORT_ASCENDING);
 };
 clicked=function(car){
-	car.hud.plateTxt.visible=true;
-	car.hud.plateTxt.text="Current car: "+car.plateArray[car.plateIndex]+"\n"+car.make+"\n"+car.carColor;
 	if(car.isWanted){
 		car.hud.win=true;
 		car.hud.winCar=car;
@@ -162,6 +179,26 @@ clicked=function(car){
 	else{
 		car.hud.win=false;
 	}
+	if(car.make==="Sedan"){
+		car.hud.makeGauge.frame=0;
+	}
+	else if(car.make==="Truck"){
+		car.hud.makeGauge.frame=1;
+	}
+	else{
+		car.hud.makeGauge.frame=2;
+	}
+	if(car.carColor==="Red"){
+		car.hud.colorGauge.frame=7;
+	}
+	else if(car.carColor==="Gray"){
+		car.hud.colorGauge.frame=8;
+	}
+	else{
+		car.hud.colorGauge.frame=9;	
+	}
+	car.hud.plateGauge.frame=14+car.plateIndex;
+	
 };
 goBack=function(slider){
 		slider.x=500;
