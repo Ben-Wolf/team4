@@ -32,8 +32,8 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 		this.make='Sedan';
 		this.carColor='Red';
 	}
-	let randColor=Math.floor(Math.random()*3);
 	else{
+		let randColor=Math.floor(Math.random()*3);
 		let randMake=Math.floor(Math.random()*3);
 		if(randMake===0){
 			this.make='Sedan';
@@ -81,7 +81,7 @@ Car.prototype.update=function(){
 };
 
 //HUD is well, the HUD for phase 1. Also tracks if the player has found the right car or not.
-let HUD=function(game){
+let HUD=function(game, group){
 	let style = { font: "32px Arial", fill: "#ff0044", align: "center", backgroundColor: "#ff0000" };
 	this.plateTxt=game.add.text(500, 150, "",style);
 	this.plateTxt.addColor("#ffffff",0);
@@ -97,27 +97,28 @@ let HUD=function(game){
 	this.takenArray=[]
 	this.win=false;
 	this.pastPoint=false;
+	this.makeGauge=game.add.sprite(500,2000,"alert");
+	group.add(this.makeGauge);
 };
 HUD.prototype.constructor=HUD;
 let titleState = function(){
 };
 
 titleState.prototype.create = function(){
+	this.depthGroup=game.add.group();
 	this.foundCar=false;
 	let map = game.add.tilemap("TileMap1");
 	map.addTilesetImage("newtiles", "newtiles");
 	map.addTilesetImage("curb", "curb");
 	let layer = map.createLayer("Tile Layer 1")
-	let plate=game.add.sprite(1100,2300,"player");
-	console.log(plate);
-	console.log("no, i am not broken yet");
+	this.depthGroup.add(layer);
 	this.player=game.add.sprite(882+118/2,1218,"player");
 	this.player.anchor.set(.5,.5);
 	this.player.angle=-90;
-	this.hud=new HUD(game);
+	this.hud=new HUD(game, this.depthGroup);
 	this.currentTime=0;
 	this.spawnTime=Math.floor(Math.random()*10)+3;
-	spawnNewCar(this.hud);
+	spawnNewCar(this.hud, this.depthGroup);
 };
 titleState.prototype.update = function(){
 	this.hud.slider.y=2400;
@@ -145,7 +146,7 @@ titleState.prototype.update = function(){
 		this.foundCar=false;
 	}
 	if(this.spawnTime<=this.game.time.totalElapsedSeconds()-this.currentTime&&!this.foundCar){
-		spawnNewCar(this.hud);
+		spawnNewCar(this.hud, this.depthGroup);
 		this.currentTime=this.game.time.totalElapsedSeconds();
 		this.spawnTime=Math.floor(Math.random()*10)+3;
 	}
@@ -158,11 +159,13 @@ resetThis=function(car, hud){
 	car.hud.takenArray[car.plateIndex]=false;
 	car.destroy();
 };
-spawnNewCar=function(hud){
+spawnNewCar=function(hud, group){
 	let spawnedCar=new Car(game,32 , 2436-132-118, Math.floor(Math.random()*5),hud.takenArray,hud);
 	hud.takenArray=spawnedCar.takenArray;
 	//spawnedCar.scale.set(3,3);
 	car=game.add.existing(spawnedCar);
+	group.add(car,false,1);
+	group.sort('z',Phaser.Group.SORT_ASCENDING);
 };
 clicked=function(car){
 	car.hud.plateTxt.visible=true;
@@ -174,6 +177,16 @@ clicked=function(car){
 	else{
 		car.hud.win=false;
 	}
+	if(car.make==="Sedan"){
+		car.hud.makeGauge.frame=0;
+	}
+	else if(car.make==="Truck"){
+		car.hud.makeGauge.frame=1;
+	}
+	else{
+		car.hud.makeGauge.frame=2;
+	}
+	
 };
 goBack=function(slider){
 		slider.x=500;
