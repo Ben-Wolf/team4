@@ -10,7 +10,7 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 	this.isWanted=false;
 	this.takenArray=takenArray;
 	//list of possible license plates
-	this.plateArray=["TGH 5675", "WIN 2359", "ADE 6577", "HHT 6054", "LMB 1653", "KWQ 9424", "PWF 0248"];
+	this.plateArray=["MD1", "BA2", "SO3", "SR4", "GL5", "SF6", "BW7"];
 	if(this.takenArray.length===0){
 		this.takenArray.fill(0, this.plateArray.length,false);
 	}
@@ -81,12 +81,9 @@ Car.prototype.update=function(){
 };
 
 //HUD is well, the HUD for phase 1. Also tracks if the player has found the right car or not.
-let HUD=function(game, group){
+let HUD=function(game){
 	let style = { font: "32px Arial", fill: "#ff0044", align: "center", backgroundColor: "#ff0000" };
-	this.plateTxt=game.add.text(500, 150, "",style);
-	this.plateTxt.addColor("#ffffff",0);
-	this.plateTxt.visible=false;
-	this.wantTxt=game.add.text(500, this.plateTxt.y-150, "Looking for: WIN 2359\nMake: Sedan\nColor: Red",style);
+	this.wantTxt=game.add.text(500, 12, "Looking for: BA2\nMake: Sedan\nColor: Red",style);
 	this.wantTxt.addColor("#ffffff",0);
 	this.slider=game.add.sprite(500,550,"bird");
 	this.slider.inputEnabled=true;
@@ -98,7 +95,12 @@ let HUD=function(game, group){
 	this.win=false;
 	this.pastPoint=false;
 	this.makeGauge=game.add.sprite(500,2000,"alert");
-	group.add(this.makeGauge);
+	this.colorGauge=game.add.sprite(300,2000,"alert");
+	this.colorGauge.frame=7;
+	this.plateGauge=game.add.sprite(100,2000,"alert");
+	this.plateGauge.frame=14;
+	//group.add(this.makeGauge);
+	//group.add(this.colorGauge);
 };
 HUD.prototype.constructor=HUD;
 let titleState = function(){
@@ -168,8 +170,6 @@ spawnNewCar=function(hud, group){
 	group.sort('z',Phaser.Group.SORT_ASCENDING);
 };
 clicked=function(car){
-	car.hud.plateTxt.visible=true;
-	car.hud.plateTxt.text="Current car: "+car.plateArray[car.plateIndex]+"\n"+car.make+"\n"+car.carColor;
 	if(car.isWanted){
 		car.hud.win=true;
 		car.hud.winCar=car;
@@ -186,6 +186,16 @@ clicked=function(car){
 	else{
 		car.hud.makeGauge.frame=2;
 	}
+	if(car.carColor==="Red"){
+		car.hud.colorGauge.frame=7;
+	}
+	else if(car.carColor==="Gray"){
+		car.hud.colorGauge.frame=8;
+	}
+	else{
+		car.hud.colorGauge.frame=9;	
+	}
+	car.hud.plateGauge.frame=14+car.plateIndex;
 	
 };
 goBack=function(slider){
