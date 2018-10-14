@@ -24,35 +24,33 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 	//change 5 to number of car models
 	//type arrays taken from gameState
 	sedan = ["sedan_red", "sedan_gray", "sedan_white"];
-	truck = ["truck_red", "truck_gray", "truck_black", "truck_white"];
-	cargo = ["cargo_red", "cargo_gray", "cargo_green", "cargo_white"];
+	truck = ["truck_red", "truck_gray", "truck_white"];
+	cargo = ["cargo_red", "cargo_gray", "cargo_white"];
 	let type;
 	if(this.plateIndex===1){
 		type='sedan_red';
 		this.make='Sedan';
 		this.carColor='Red';
 	}
+	let randColor=Math.floor(Math.random()*3);
 	else{
 		let randMake=Math.floor(Math.random()*3);
 		if(randMake===0){
 			this.make='Sedan';
-			randMake=Math.floor(Math.random()*3);
-			type=sedan[randMake];
-			this.carColor=sedan[randMake].slice(6);
+			type=sedan[randColor];
+			this.carColor=sedan[randColor].slice(6);
 			this.carColor=this.carColor.charAt(0).toUpperCase()+this.carColor.substring(1);
 		}
 		else if(randMake===1){
 			this.make='Truck';
-			randMake=Math.floor(Math.random()*3);
-			type=truck[randMake];
-			this.carColor=truck[randMake].slice(6);
+			type=truck[randColor];
+			this.carColor=truck[randColor].slice(6);
 			this.carColor=this.carColor.charAt(0).toUpperCase()+this.carColor.substring(1);
 		}
 		else{
 			this.make='Cargo';
-			randMake=Math.floor(Math.random()*3);
-			type=truck[randMake];
-			this.carColor=cargo[randMake].slice(6);
+			type=cargo[randColor];
+			this.carColor=cargo[randColor].slice(6);
 			this.carColor=this.carColor.charAt(0).toUpperCase()+this.carColor.substring(1);
 		}
 	}
