@@ -114,9 +114,10 @@ titleState.prototype.create = function(){
 	map.addTilesetImage("curb", "curb");
 	let layer = map.createLayer("Tile Layer 1")
 	this.depthGroup.add(layer);
-	this.player=game.add.sprite(882+118/2,1218,"player");
+	this.player=game.add.sprite(882-144/2,1218,"player");
 	this.player.anchor.set(.5,.5);
 	this.player.angle=-90;
+	this.ani=this.player.animations.add("siren", [0,1,2,3,4,5,6,7,8,7,6,5,4,3,2,1]);
 	this.hud=new HUD(game, this.depthGroup);
 	this.currentTime=0;
 	this.spawnTime=Math.floor(Math.random()*10)+3;
@@ -140,6 +141,9 @@ titleState.prototype.update = function(){
 	if(this.hud.slider.x>=580){
 		if(this.hud.win){
 			transitionAni(this.hud.winCar);
+			if(!this.ani.isPlaying){
+				this.ani.play(10,true);
+			}
 			this.transitionStarted=true;
 			this.foundCar=true;
 			//movePlayer(this.player);
@@ -215,7 +219,7 @@ transitionAni=function(car){
 	//}
 }
 movePlayer=function(player){
-	if(player.x>=882-140+118/2-118){
+	if(player.x>=882-140+144/2-128){
 		player.x-=5;
 	}
 	else{
