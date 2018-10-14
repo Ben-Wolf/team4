@@ -120,6 +120,7 @@ titleState.prototype.create = function(){
 	this.hud=new HUD(game, this.depthGroup);
 	this.currentTime=0;
 	this.spawnTime=Math.floor(Math.random()*10)+3;
+	this.transitionStarted=false;
 	spawnNewCar(this.hud, this.depthGroup);
 };
 titleState.prototype.update = function(){
@@ -139,12 +140,13 @@ titleState.prototype.update = function(){
 	if(this.hud.slider.x>=580){
 		if(this.hud.win){
 			transitionAni(this.hud.winCar);
+			this.transitionStarted=true;
 			this.foundCar=true;
 			//movePlayer(this.player);
 			//console.log(this.hud.winCar.y);
 		}
 	}
-	if(!this.hud.win){
+	if(!this.hud.win&&!this.transitionStarted){
 		this.foundCar=false;
 	}
 	if(this.spawnTime<=this.game.time.totalElapsedSeconds()-this.currentTime&&!this.foundCar){
@@ -152,7 +154,7 @@ titleState.prototype.update = function(){
 		this.currentTime=this.game.time.totalElapsedSeconds();
 		this.spawnTime=Math.floor(Math.random()*10)+3;
 	}
-	if(this.foundCar&&this.hud.pastPoint){
+	if(this.transitionStarted&&this.hud.pastPoint){
 		movePlayer(this.player);
 	}
 };
