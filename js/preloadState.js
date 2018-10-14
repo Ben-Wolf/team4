@@ -4,7 +4,7 @@ let preloadState = function() {
 };
 
 preloadState.prototype.preload = function() {
-	game.load.image("star", "assets/star.png"); // TODO: Make sure to remove unused assets
+	//game.load.image("star", "assets/star.png"); // TODO: Make sure to remove unused assets
 	// SEDANS
 	game.load.image("sedan", "assets/sedan_white.png");
 	game.load.image("sedan_white", "assets/sedan_white.png");
@@ -26,6 +26,7 @@ preloadState.prototype.preload = function() {
 	game.load.image("bound_v", "assets/bound_v.png");
 	// HUD
     game.load.spritesheet("steering_wheel", "assets/steering_wheel.png", 468, 468);
+    game.load.spritesheet("alert","assets/alert_gauges.png",200,200);
 	// Player
 	game.load.spritesheet("player", "assets/patrol_car.png", 64, 118);
 	// Map assets

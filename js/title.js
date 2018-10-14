@@ -107,7 +107,10 @@ titleState.prototype.create = function(){
 	let map = game.add.tilemap("TileMap1");
 	map.addTilesetImage("newtiles", "newtiles");
 	map.addTilesetImage("curb", "curb");
-	let layer = map.createLayer("Tile Layer 1");
+	let layer = map.createLayer("Tile Layer 1")
+	let plate=game.add.sprite(1100,2300,"player");
+	console.log(plate);
+	console.log("no, i am not broken yet");
 	this.player=game.add.sprite(882+118/2,1218,"player");
 	this.player.anchor.set(.5,.5);
 	this.player.angle=-90;
