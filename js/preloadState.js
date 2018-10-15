@@ -36,6 +36,8 @@ preloadState.prototype.preload = function() {
 	game.load.image("newtiles", "assets/newtiles.png");
 	game.load.image("curb", "assets/curb.png");
 	game.load.image("map", "assets/newmap.png")
+	//sound effects
+	game.load.audio("siren","assets/siren.mp3");
 };
 
 preloadState.prototype.create = function() {
