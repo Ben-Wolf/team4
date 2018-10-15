@@ -126,7 +126,7 @@ titleState.prototype.create = function(){
 	this.transitionStarted=false;
 	this.siren=game.add.audio('siren');
 	this.music=game.add.audio("identify");
-	this.music.play();
+	this.music.play("", 0, 1, true);
 	spawnNewCar(this.hud, this.depthGroup);
 };
 titleState.prototype.update = function(){
