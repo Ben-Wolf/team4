@@ -54,7 +54,7 @@ let Car=function(game, x, y, lane=0, takenArray=[], hud){
 			this.carColor=this.carColor.charAt(0).toUpperCase()+this.carColor.substring(1);
 		}
 	}
-	Phaser.Sprite.call(this, game, x+140*lane+32, y, type);
+	Phaser.Sprite.call(this, game, x+144*lane+32, y, type);
 	this.anchor.set(.5,.5);
 	this.inputEnabled=true;
 	this.events.onInputDown.add(clicked, this);
@@ -85,20 +85,21 @@ let HUD=function(game){
 	let style = { font: "32px Arial", fill: "#ff0044", align: "center", backgroundColor: "#ff0000" };
 	this.wantTxt=game.add.text(500, 12, "Looking for: BA2\nMake: Sedan\nColor: Red",style);
 	this.wantTxt.addColor("#ffffff",0);
-	this.slider=game.add.sprite(500,550,"bird");
-	this.slider.inputEnabled=true;
-	//rectangle is supposed to be bounds, it isn't...
-	this.slider.input.enableDrag(false,false,false, Phaser.Rectangle(500, 550, 100, 100));
-	this.slider.input.allowVerticalDrag=false;
-	this.slider.events.onDragStop.add(goBack, this);
 	this.takenArray=[]
 	this.win=false;
 	this.pastPoint=false;
-	this.makeGauge=game.add.sprite(500,2000,"alert");
-	this.colorGauge=game.add.sprite(300,2000,"alert");
+	let carHUD=game.add.sprite(0,0,"carHUD");
+	this.makeGauge=game.add.sprite(633,1880,"alert");
+	this.colorGauge=game.add.sprite(898,1882,"alert");
 	this.colorGauge.frame=7;
-	this.plateGauge=game.add.sprite(100,2000,"alert");
+	this.plateGauge=game.add.sprite(765,2068,"alert");
 	this.plateGauge.frame=14;
+	this.slider=game.add.sprite(500,550,"bird");
+	this.slider.inputEnabled=true;
+	//rectangle is supposed to be bounds, it isn't...
+	this.slider.input.enableDrag(false,false,false, Phaser.Rectangle(600, 2400, 100, 100));
+	this.slider.input.allowVerticalDrag=false;
+	this.slider.events.onDragStop.add(goBack, this);
 	//group.add(this.makeGauge);
 	//group.add(this.colorGauge);
 };
@@ -114,35 +115,39 @@ titleState.prototype.create = function(){
 	map.addTilesetImage("curb", "curb");
 	let layer = map.createLayer("Tile Layer 1")
 	this.depthGroup.add(layer);
-	this.player=game.add.sprite(882-144/2,1218,"player");
+	this.player=game.add.sprite(882-72/2,1218,"player");
 	this.player.anchor.set(.5,.5);
+	this.player.scale.set(1.5,1.5);
 	this.player.angle=-90;
 	this.ani=this.player.animations.add("siren", [0,1,2,3,4,5,6,7,8,7,6,5,4,3,2,1]);
 	this.hud=new HUD(game, this.depthGroup);
 	this.currentTime=0;
 	this.spawnTime=Math.floor(Math.random()*10)+3;
 	this.transitionStarted=false;
+	this.siren=game.add.audio('siren');
 	spawnNewCar(this.hud, this.depthGroup);
 };
 titleState.prototype.update = function(){
-	this.hud.slider.y=2400;
-	if(this.hud.slider.x>600){
-			this.hud.slider.x=600;
+	this.hud.slider.y=2350;
+	if(this.hud.slider.x>1050){
+			this.hud.slider.x=1050;
 		}
-		else if(this.hud.slider.x<500){
-			this.hud.slider.x=500;
+		else if(this.hud.slider.x<650){
+			this.hud.slider.x=650;
 		}
-	if(game.input.mousePointer.x<500||game.input.mousePointer.x>600){
+	if(game.input.mousePointer.x<650||game.input.mousePointer.x>1050){
 		this.hud.slider.input.allowHorizontalDrag=false;
 	}
 	else if(!this.hud.slider.input.allowHorizontalDrag){
 		this.hud.slider.input.allowHorizontalDrag=true;
 	}
-	if(this.hud.slider.x>=580){
+	if(this.hud.slider.x>=1000){
 		if(this.hud.win){
 			transitionAni(this.hud.winCar);
 			if(!this.ani.isPlaying){
 				this.ani.play(10,true);
+				this.siren.play("", 0, 1, false);
+				console.log("lol");
 			}
 			this.transitionStarted=true;
 			this.foundCar=true;
@@ -156,10 +161,10 @@ titleState.prototype.update = function(){
 	if(this.spawnTime<=this.game.time.totalElapsedSeconds()-this.currentTime&&!this.foundCar){
 		spawnNewCar(this.hud, this.depthGroup);
 		this.currentTime=this.game.time.totalElapsedSeconds();
-		this.spawnTime=Math.floor(Math.random()*10)+3;
+		this.spawnTime=Math.floor(Math.random()*4)+3;
 	}
 	if(this.transitionStarted&&this.hud.pastPoint){
-		movePlayer(this.player);
+		movePlayer(this.player, this.siren);
 	}
 };
 //used to kill the car when it hits the bounds of the screen.
@@ -170,8 +175,8 @@ resetThis=function(car, hud){
 spawnNewCar=function(hud, group){
 	let spawnedCar=new Car(game,32 , 2436-132-118, Math.floor(Math.random()*5),hud.takenArray,hud);
 	hud.takenArray=spawnedCar.takenArray;
-	//spawnedCar.scale.set(3,3);
 	car=game.add.existing(spawnedCar);
+	car.scale.set(1.5,1.5);
 	group.add(car,false,1);
 	group.sort('z',Phaser.Group.SORT_ASCENDING);
 };
@@ -218,8 +223,8 @@ transitionAni=function(car){
 		car.moveVelo=-8;
 	//}
 }
-movePlayer=function(player){
-	if(player.x>=882-140+144/2-128){
+movePlayer=function(player, siren){
+	if(player.x>=882-240){
 		player.x-=5;
 	}
 	else{
@@ -227,6 +232,7 @@ movePlayer=function(player){
 		player.y-=8;
 	}
 	if(player.y<=10){
+		siren.stop();
 		game.state.start("Game");
 	}
 }
