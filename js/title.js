@@ -159,7 +159,7 @@ titleState.prototype.update = function(){
 	if(this.spawnTime<=this.game.time.totalElapsedSeconds()-this.currentTime&&!this.foundCar){
 		spawnNewCar(this.hud, this.depthGroup);
 		this.currentTime=this.game.time.totalElapsedSeconds();
-		this.spawnTime=Math.floor(Math.random()*10)+3;
+		this.spawnTime=Math.floor(Math.random()*4)+3;
 	}
 	if(this.transitionStarted&&this.hud.pastPoint){
 		movePlayer(this.player, this.siren);
