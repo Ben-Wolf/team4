@@ -125,6 +125,8 @@ titleState.prototype.create = function(){
 	this.spawnTime=Math.floor(Math.random()*10)+3;
 	this.transitionStarted=false;
 	this.siren=game.add.audio('siren');
+	this.music=game.add.audio("identify");
+	this.music.play();
 	spawnNewCar(this.hud, this.depthGroup);
 };
 titleState.prototype.update = function(){
@@ -146,7 +148,7 @@ titleState.prototype.update = function(){
 			transitionAni(this.hud.winCar);
 			if(!this.ani.isPlaying){
 				this.ani.play(10,true);
-				this.siren.play("", 0, 1, false);
+				this.siren.play("", 0, .5, false);
 				console.log("lol");
 			}
 			this.transitionStarted=true;
@@ -164,7 +166,7 @@ titleState.prototype.update = function(){
 		this.spawnTime=Math.floor(Math.random()*4)+3;
 	}
 	if(this.transitionStarted&&this.hud.pastPoint){
-		movePlayer(this.player, this.siren);
+		movePlayer(this.player, this.siren, this.music);
 	}
 };
 //used to kill the car when it hits the bounds of the screen.
@@ -223,7 +225,7 @@ transitionAni=function(car){
 		car.moveVelo=-8;
 	//}
 }
-movePlayer=function(player, siren){
+movePlayer=function(player, siren, music){
 	if(player.x>=882-240){
 		player.x-=5;
 	}
@@ -233,6 +235,7 @@ movePlayer=function(player, siren){
 	}
 	if(player.y<=10){
 		siren.stop();
+		music.stop();
 		game.state.start("Game");
 	}
 }

@@ -84,6 +84,9 @@ gameState.prototype.create = function() {
 
     // Capture mouse input
     game.input.mouse.capture = true;
+    //music for the stage TODO: stop music when switching to the end screen
+    this.music=game.add.audio("chase");
+    this.music.play();
 };
 
 gameState.prototype.update = function() {
