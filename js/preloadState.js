@@ -27,6 +27,7 @@ preloadState.prototype.preload = function() {
 	// HUD
     game.load.spritesheet("steering_wheel", "assets/steering_wheel.png", 468, 468);
     game.load.spritesheet("alert","assets/alert_gauges.png",200,200);
+    game.load.image("carHUD","assets/HUD.png");
 	// Player
 	//game.load.spritesheet("player", "assets/patrol_car.png", 64, 118);
 	game.load.spritesheet("player", "assets/Patrol Car Sprite with Animation.png", 64, 144);

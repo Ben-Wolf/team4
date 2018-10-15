@@ -85,20 +85,21 @@ let HUD=function(game){
 	let style = { font: "32px Arial", fill: "#ff0044", align: "center", backgroundColor: "#ff0000" };
 	this.wantTxt=game.add.text(500, 12, "Looking for: BA2\nMake: Sedan\nColor: Red",style);
 	this.wantTxt.addColor("#ffffff",0);
-	this.slider=game.add.sprite(500,550,"bird");
-	this.slider.inputEnabled=true;
-	//rectangle is supposed to be bounds, it isn't...
-	this.slider.input.enableDrag(false,false,false, Phaser.Rectangle(500, 550, 100, 100));
-	this.slider.input.allowVerticalDrag=false;
-	this.slider.events.onDragStop.add(goBack, this);
 	this.takenArray=[]
 	this.win=false;
 	this.pastPoint=false;
-	this.makeGauge=game.add.sprite(500,2000,"alert");
-	this.colorGauge=game.add.sprite(300,2000,"alert");
+	let carHUD=game.add.sprite(0,0,"carHUD");
+	this.makeGauge=game.add.sprite(633,1880,"alert");
+	this.colorGauge=game.add.sprite(898,1882,"alert");
 	this.colorGauge.frame=7;
-	this.plateGauge=game.add.sprite(100,2000,"alert");
+	this.plateGauge=game.add.sprite(765,2068,"alert");
 	this.plateGauge.frame=14;
+	this.slider=game.add.sprite(500,550,"bird");
+	this.slider.inputEnabled=true;
+	//rectangle is supposed to be bounds, it isn't...
+	this.slider.input.enableDrag(false,false,false, Phaser.Rectangle(600, 2400, 100, 100));
+	this.slider.input.allowVerticalDrag=false;
+	this.slider.events.onDragStop.add(goBack, this);
 	//group.add(this.makeGauge);
 	//group.add(this.colorGauge);
 };
@@ -127,20 +128,20 @@ titleState.prototype.create = function(){
 	spawnNewCar(this.hud, this.depthGroup);
 };
 titleState.prototype.update = function(){
-	this.hud.slider.y=2400;
-	if(this.hud.slider.x>600){
-			this.hud.slider.x=600;
+	this.hud.slider.y=2350;
+	if(this.hud.slider.x>1050){
+			this.hud.slider.x=1050;
 		}
-		else if(this.hud.slider.x<500){
-			this.hud.slider.x=500;
+		else if(this.hud.slider.x<650){
+			this.hud.slider.x=650;
 		}
-	if(game.input.mousePointer.x<500||game.input.mousePointer.x>600){
+	if(game.input.mousePointer.x<650||game.input.mousePointer.x>1050){
 		this.hud.slider.input.allowHorizontalDrag=false;
 	}
 	else if(!this.hud.slider.input.allowHorizontalDrag){
 		this.hud.slider.input.allowHorizontalDrag=true;
 	}
-	if(this.hud.slider.x>=580){
+	if(this.hud.slider.x>=1000){
 		if(this.hud.win){
 			transitionAni(this.hud.winCar);
 			if(!this.ani.isPlaying){
