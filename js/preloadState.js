@@ -39,6 +39,9 @@ preloadState.prototype.preload = function() {
 	game.load.image("map", "assets/newmap.png")
 	//sound effects
 	game.load.audio("siren","assets/siren.mp3");
+	//music 
+	game.load.audio("identify","assets/Identify.wav");
+	game.load.audio("chase","assets/Chase.wav");
 };
 
 preloadState.prototype.create = function() {
