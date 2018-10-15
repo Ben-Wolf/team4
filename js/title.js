@@ -94,7 +94,7 @@ let HUD=function(game){
 	this.colorGauge.frame=7;
 	this.plateGauge=game.add.sprite(765,2068,"alert");
 	this.plateGauge.frame=14;
-	this.slider=game.add.sprite(500,550,"bird");
+	this.slider=game.add.sprite(500,550,"gear");
 	this.slider.inputEnabled=true;
 	//rectangle is supposed to be bounds, it isn't...
 	this.slider.input.enableDrag(false,false,false, Phaser.Rectangle(600, 2400, 100, 100));
@@ -122,28 +122,28 @@ titleState.prototype.create = function(){
 	this.ani=this.player.animations.add("siren", [0,1,2,3,4,5,6,7,8,7,6,5,4,3,2,1]);
 	this.hud=new HUD(game, this.depthGroup);
 	this.currentTime=0;
-	this.spawnTime=Math.floor(Math.random()*10)+3;
+	this.spawnTime=0;
 	this.transitionStarted=false;
 	this.siren=game.add.audio('siren');
 	this.music=game.add.audio("identify");
 	this.music.play("", 0, 1, true);
-	spawnNewCar(this.hud, this.depthGroup);
+	//spawnNewCar(this.hud, this.depthGroup);
 };
 titleState.prototype.update = function(){
-	this.hud.slider.y=2350;
-	if(this.hud.slider.x>1050){
-			this.hud.slider.x=1050;
+	this.hud.slider.y=2300;
+	if(this.hud.slider.x>1000){
+			this.hud.slider.x=1000;
 		}
 		else if(this.hud.slider.x<650){
 			this.hud.slider.x=650;
 		}
-	if(game.input.mousePointer.x<650||game.input.mousePointer.x>1050){
+	if(game.input.mousePointer.x<650||game.input.mousePointer.x>1000){
 		this.hud.slider.input.allowHorizontalDrag=false;
 	}
 	else if(!this.hud.slider.input.allowHorizontalDrag){
 		this.hud.slider.input.allowHorizontalDrag=true;
 	}
-	if(this.hud.slider.x>=1000){
+	if(this.hud.slider.x>=950){
 		if(this.hud.win){
 			transitionAni(this.hud.winCar);
 			if(!this.ani.isPlaying){
