@@ -82,9 +82,7 @@ Car.prototype.update=function(){
 
 //HUD is well, the HUD for phase 1. Also tracks if the player has found the right car or not.
 let HUD=function(game){
-	let style = { font: "32px Arial", fill: "#ff0044", align: "center", backgroundColor: "#ff0000" };
-	this.wantTxt=game.add.text(500, 12, "Looking for: BA2\nMake: Sedan\nColor: Red",style);
-	this.wantTxt.addColor("#ffffff",0);
+	let style = { font: "24px Verdana", fill: "#ffffff", align: "center"};
 	this.takenArray=[]
 	this.win=false;
 	this.pastPoint=false;
@@ -100,6 +98,9 @@ let HUD=function(game){
 	this.slider.input.enableDrag(false,false,false, Phaser.Rectangle(600, 2400, 100, 100));
 	this.slider.input.allowVerticalDrag=false;
 	this.slider.events.onDragStop.add(goBack, this);
+	this.wantTxt=game.add.text(126, 1920, "SEDAN",style);
+	this.plateTxt=game.add.text(283, 1884, "BA2",style);
+	this.colorTxt=game.add.text(417, 1920, "RED",style);
 	//group.add(this.makeGauge);
 	//group.add(this.colorGauge);
 };
