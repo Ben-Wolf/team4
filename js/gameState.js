@@ -29,7 +29,6 @@ gameState.prototype.create = function() {
 		 							  13, 14, 15 ,16 ,17 ,18 ,19, 20, 21, 22,
 									  23, 24, 25, 26, 27, 28, 29, 30], 20, true);
 	this.map.animations.play("right");
-	//this.map.animations.paused = false;
 
 	// Add HUD Area
     // Add "Steering wheel"
@@ -45,7 +44,6 @@ gameState.prototype.create = function() {
     // Create the cars
 	this.perp = null;
     this.cars = game.add.group();
-	//this.numCars = 0;
 	this.numDeleted = 0;
 	this.hasCrashed = false;
     this.cars.enableBody = true;
@@ -84,17 +82,16 @@ gameState.prototype.create = function() {
 
     // Capture mouse input
     game.input.mouse.capture = true;
-    //music for the stage TODO: stop music when switching to the end screen
+    //music for the stage
     this.music=game.add.audio("chase");
     this.music.play("", 0, 1, true);
 	this.haltAnimation = 0;
+	this.crashSound = game.add.audio("crash");
 };
 
 gameState.prototype.update = function() {
     // Collisions
     game.physics.arcade.collide(this.bounds, this.player);
-    //game.physics.arcade.collide(this.cars, this.cars);
-	//game.physics.arcade.collide(this.animals, this.player);
 
     // Overlaps
 	game.physics.arcade.overlap(this.player, this.perp, this.win, null, this);
@@ -220,6 +217,7 @@ gameState.prototype.crash = function(player, object) {
 	this.hasCrashed = true;
 	this.map.animations.paused = true;
 	this.animals.forEach(function (a) { a.kill(); });
+	this.crashSound.play("", 0, 2, false);
 };
 
 gameState.prototype.crashAnimal = function(player, object) {
@@ -296,27 +294,6 @@ function createCars(cars, starts, speeds, timers, speed_m, s, t, c) {
         }
     }
 };
-/*
-gameState.prototype.restartCars = function() {
-	this.hasCrashed = false;
-	this.map.animations.paused = false;
-};
-*/
-
-/*
-function createAnimals(animals, starts, speeds, timers, speed_m) {
-    for (let i = 0; i < 3; ++i) {
-        if (timers[i] === 0) {
-            timers[i] = 120;
-            let animal = animals.create(65, starts[i], "bird");
-            animal.body.velocity.x = - 100;
-            animal.scale.set(3,3);
-        } else {
-            timers[i]--;
-        }
-    }
-};
-*/
 
 // Bless JS Hoisting
 function getRandomInt(max) {
