@@ -128,17 +128,23 @@ titleState.prototype.create = function(){
 	this.siren=game.add.audio('siren');
 	this.music=game.add.audio("identify");
 	this.music.play("", 0, 1, true);
+	this.wantedSpawned=false;
+	this.timeAfterWanted=0;
 	//spawnNewCar(this.hud, this.depthGroup);
 };
 titleState.prototype.update = function(){
 	this.hud.slider.y=2300;
+	if(this.hud.win&&!this.wantedSpawned){
+		this.wantedSpawned=true;
+		this.timeAfterWanted=this.game.time.totalElapsedSeconds();
+	}
 	if(this.hud.slider.x>1000){
 			this.hud.slider.x=1000;
 		}
 		else if(this.hud.slider.x<650){
 			this.hud.slider.x=650;
 		}
-	if(game.input.mousePointer.x<650||game.input.mousePointer.x>1000){
+	if(game.input.mousePointer.x<650||game.input.mousePointer.x>1080){
 		this.hud.slider.input.allowHorizontalDrag=false;
 	}
 	else if(!this.hud.slider.input.allowHorizontalDrag){
@@ -167,6 +173,10 @@ titleState.prototype.update = function(){
 	}
 	if(this.transitionStarted&&this.hud.pastPoint){
 		movePlayer(this.player, this.siren, this.music);
+	}
+	if((this.wantedSpawned&&60<=this.game.time.totalElapsedSeconds()-this.timeAfterWanted)||200<=this.game.time.totalElapsedSeconds()){
+		console.log("lose");
+		//put transition to lose screen here
 	}
 };
 //used to kill the car when it hits the bounds of the screen.
