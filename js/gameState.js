@@ -106,9 +106,9 @@ gameState.prototype.update = function() {
 	game.physics.arcade.overlap(this.player, this.perp, this.win, null, this);
 	game.physics.arcade.overlap(this.bounds, this.cars, this.removeCar, null, this);
 	game.physics.arcade.overlap(this.dash, this.cars, this.removeCar, null, this);
-	//game.physics.arcade.overlap(this.bounds, this.animals, this.removeAnimal, null, this);
+	game.physics.arcade.overlap(this.bounds, this.animals, this.removeAnimal, null, this);
     game.physics.arcade.overlap(this.player, this.cars, this.crash, null, this);
-	//game.physics.arcade.overlap(this.player, this.animals, this.crash, null, this);
+	game.physics.arcade.overlap(this.player, this.animals, this.crashAnimal, null, this);
 
 	//When all cars are gone, start driving again
 	this.numCars = this.cars.length;
@@ -182,11 +182,11 @@ gameState.prototype.removeCar = function(boundary, car) {
     car.kill();
 	this.numDeleted += 1;
 };
-/*
+
 gameState.prototype.removeAnimal = function(boundary, animal) {
     animal.kill();
 };
-*/
+
 
 gameState.prototype.win = function(player, perp) {
     this.music.stop();
@@ -206,7 +206,21 @@ gameState.prototype.crash = function(player, object) {
 		c.body.velocity.y = -2 * Math.abs(c.body.velocity.y); });
 	this.hasCrashed = true;
 	this.map.animations.paused = true;
-	//this.animals.forEach(function (a) { a.kill(); });
+	this.animals.forEach(function (a) { a.kill(); });
+};
+
+gameState.prototype.crashAnimal = function(player, object) {
+	object.kill();
+	this.haltAnimation = 90;
+	this.d2p += 350;
+	this.d2p_since_last_crash = this.d2p;
+	this.speed_multiplier = 1;
+	this.timers = [210, 160, 90, 120, 270];
+	 this.cars.forEach(function (c) {
+		c.body.velocity.y = -2 * Math.abs(c.body.velocity.y); });
+	this.hasCrashed = true;
+	this.map.animations.paused = true;
+	this.animals.forEach(function (a) { a.kill(); });
 };
 
 gameState.prototype.turnRight = function() {
@@ -236,9 +250,9 @@ function spawnPerp(cars, start) {
 };
 
 function spawnBird(animals) {
-	let animal = animals.create(0, 0, "bird");
+	let animal = animals.create(800, 100, "bird");
 	animal.body.velocity.y = 400;
-	animal.body.velocity.x = -50;
+	animal.body.velocity.x = -100;
 	animal.scale.set(3, 3);
 	animal.animations.add("graze", [0, 1], 3, true);
 	animal.animations.play("graze");
