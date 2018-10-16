@@ -5,7 +5,10 @@ let preloadState = function() {
 
 preloadState.prototype.preload = function() {
 	// MUSIC & SOUNDS
-	game.load.audio('siren', "assets/music/siren.mp3");
+	game.load.audio("siren","assets/music/siren.mp3");
+	game.load.audio('crash', "assets/music/crash.mp3");
+	game.load.audio("identify","assets/music/Identify.wav");
+	game.load.audio("chase","assets/music/Chase.wav");
 	// SEDANS
 	game.load.image("sedan_white", "assets/sedans/sedan_white.png");
   	game.load.image("sedan_red", "assets/sedans/sedan_red.png");
@@ -40,11 +43,6 @@ preloadState.prototype.preload = function() {
 	game.load.image("newtiles", "assets/newtiles.png");
 	game.load.image("curb", "assets/curb.png");
 	game.load.spritesheet("map", "assets/map/bigmap.png", 1125, 2436, 30);
-	//sound effects
-	game.load.audio("siren","assets/siren.mp3");
-	//music
-	game.load.audio("identify","assets/Identify.wav");
-	game.load.audio("chase","assets/Chase.wav");
 	//win/lose/title screens
 	game.load.image("win","assets/WinScreen.png");
 	game.load.image("title","assets/TitleScreen.png");

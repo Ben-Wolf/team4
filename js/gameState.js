@@ -84,6 +84,7 @@ gameState.prototype.create = function() {
     this.music=game.add.audio("chase");
     this.music.play("", 0, 1, true);
 	this.haltAnimation = 0;
+	this.crashSound = game.add.audio("crash");
 };
 
 gameState.prototype.update = function() {
@@ -194,6 +195,7 @@ gameState.prototype.crash = function(player, object) {
 	this.hasCrashed = true;
 	this.map.animations.paused = true;
 	this.animals.forEach(function (a) { a.kill(); });
+	this.crashSound.play("", 0, 2, false);
 };
 
 gameState.prototype.crashAnimal = function(player, object) {
