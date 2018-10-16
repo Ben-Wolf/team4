@@ -3,8 +3,7 @@ let loseState=function(){
 
 loseState.prototype.create=function(){
 	let style = { font: "50px Verdana", fill: "#ffffff", align: "center"};
-	let loseTxt=game.add.text(400, 1200, "You ran out of time!",style);
-	loseTxt.x=562-loseTxt.width/2;
+	let lose=game.add.image(15,0,"lose");
 	let touchTxt=game.add.text(400, 1800, "Touch screen to play again.",style);
 	touchTxt.x=562-touchTxt.width/2;
 	game.input.mouse.capture = true;

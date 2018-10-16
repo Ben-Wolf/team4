@@ -46,6 +46,9 @@ preloadState.prototype.preload = function() {
 	//win/lose/title screens
 	game.load.image("win","assets/WinScreen.png");
 	game.load.image("title","assets/TitleScreen.png");
+	game.load.image("lose","assets/LoseScreen.png");
+	game.load.spritesheet("playerScreen","assets/Patrol Car 1 with Animation.png",48,48);
+
 };
 
 preloadState.prototype.create = function() {
