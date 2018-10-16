@@ -176,6 +176,7 @@ gameState.prototype.removeAnimal = function(boundary, animal) {
 */
 
 gameState.prototype.win = function(player, perp) {
+    this.music.stop();
 	game.state.start("Win");
 }
 
