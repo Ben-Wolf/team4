@@ -7,10 +7,10 @@ gameState.prototype.create = function() {
     // Create the boundaries
 	this.bounds = game.add.group();
 	this.bounds.enableBody = true;
-	let bound_b = this.bounds.create(0, game.world.height - 650, "bound_h");
-	bound_b.scale.set(4, 2);
-	bound_b.body.immovable = true;
-	bound_b.tint = 0x000000;
+	this.bound_b = this.bounds.create(0, game.world.height - 650, "bound_h");
+	this.bound_b.scale.set(4, 2);
+	this.bound_b.body.immovable = true;
+	this.bound_b.tint = 0x000000;
 	let bound_t = this.bounds.create(0, 0, "bound_h");
 	bound_t.scale.set(4, 2);
 	bound_t.body.immovable = true;
@@ -44,8 +44,6 @@ gameState.prototype.create = function() {
 
     // Create the cars
 	this.perp = null;
-	this.animals = game.add.group();
-	this.animals.enableBody = true;
     this.cars = game.add.group();
 	//this.numCars = 0;
 	this.numDeleted = 0;
@@ -60,15 +58,11 @@ gameState.prototype.create = function() {
     createCars(this.cars, this.starts, this.speeds, this.timers, 1,
 				this.sedans, this.trucks, this.cargos);
 
-	/*//Create the animals
+	//Create the animals
 	this.animals = game.add.group();
 	this.animals.enableBody = true;
-	this.animalSpeeds = [100, 150, 200, 250];
-	this.animalStarts = [100, 440, 800];
-	this.animalTimers = [200, 120, 60];
-	createAnimals(this.animals, this.animalStarts, this.animalSpeeds, this.animalTimers, 1);
-	*/
-	this.frameTimer = 30;
+	this.spawningBird = false;
+	this.birdSpawnTimer = 100;
 
     // Create the player
     this.player = game.add.sprite(200, game.world.height - 950, "player");
@@ -80,7 +74,7 @@ gameState.prototype.create = function() {
 
     // Distance to perp
     this.perpBool = false;
-	this.d2p = 2000;
+	this.d2p = 4000;
     this.d2p_text = game.add.text(145, 1910, this.d2p + "m", style);
 
 	// Speed modifiers
@@ -106,9 +100,11 @@ gameState.prototype.update = function() {
 	game.physics.arcade.overlap(this.player, this.perp, this.win, null, this);
 	game.physics.arcade.overlap(this.bounds, this.cars, this.removeCar, null, this);
 	game.physics.arcade.overlap(this.dash, this.cars, this.removeCar, null, this);
-	game.physics.arcade.overlap(this.bounds, this.animals, this.removeAnimal, null, this);
+	// game.physics.arcade.overlap(this.bounds, this.animals, this.removeAnimal, null, this);
     game.physics.arcade.overlap(this.player, this.cars, this.crash, null, this);
 	game.physics.arcade.overlap(this.player, this.animals, this.crashAnimal, null, this);
+	game.physics.arcade.overlap(this.bound_b, this.animals, this.removeAnimal, null, this);
+	game.physics.arcade.overlap(this.animals, this.cars, this.carAnimalCrash, null, this);
 
 	//When all cars are gone, start driving again
 	this.numCars = this.cars.length;
@@ -122,11 +118,14 @@ gameState.prototype.update = function() {
 		if(!this.hasCrashed){
 			this.d2p -= (0.5 * this.speed_multiplier);
 			this.speed_multiplier = Math.floor((this.d2p_since_last_crash - this.d2p) / 500) + 1;
+			if (this.speed_multiplier > 4) this.speed_multiplier = 4;
+			this.map.animations._anims.right.speed = 15 * this.speed_multiplier;
 		}
-		else{
+		else {
 			this.speed_multiplier = 0;
 		}
 		//Procedural Car Generation
+		if (!this.spawningBird)
 		createCars(this.cars, this.starts, this.speeds, this.timers,
 						this.speed_multiplier, this.sedans, this.trucks, this.cargos);
 		this.map.animations.speed = 10 * this.speed_multiplier;
@@ -145,7 +144,7 @@ gameState.prototype.update = function() {
     if (this.d2p <= 450 && !this.perpBool) {
 		this.perp = spawnPerp(this.cars, this.starts);
 		this.perpBool = true;
-    } else if (this.d2p >= 3000) {
+    } else if (this.d2p >= 5000) {
 		this.music.stop();
 		game.state.start("Lose");
 	} else {
@@ -154,7 +153,15 @@ gameState.prototype.update = function() {
 
 	//Procedural Animal Generation
 	if (this.d2p % 500 == 0) {
+		this.spawningBird = true;
+		this.birdSpawnTimer = 150;
 		spawnBird(this.animals);
+	}
+	if (this.spawningBird == true) {
+		this.birdSpawnTimer--;
+		if (this.birdSpawnTimer == 0) {
+			this.spawningBird = false;
+		}
 	}
 	//createAnimals(this.animals, this.animalStarts, this.animalSpeeds, this.animalTimers, this.speed_multiplier);
 
@@ -187,11 +194,17 @@ gameState.prototype.removeAnimal = function(boundary, animal) {
     animal.kill();
 };
 
+gameState.prototype.carAnimalCrash = function(animal, car) {
+	car.kill();
+	animal.kill();
+	this.birdSpawnTimer = 0;
+	this.spawningBird = false;
+};
 
 gameState.prototype.win = function(player, perp) {
     this.music.stop();
 	game.state.start("Win");
-}
+};
 
 // Player crash
 gameState.prototype.crash = function(player, object) {
@@ -250,13 +263,13 @@ function spawnPerp(cars, start) {
 };
 
 function spawnBird(animals) {
-	let animal = animals.create(800, 100, "bird");
+	let animal = animals.create(800, 50, "bird");
 	animal.body.velocity.y = 400;
-	animal.body.velocity.x = -100;
+	animal.body.velocity.x = -200;
 	animal.scale.set(3, 3);
-	animal.animations.add("graze", [0, 1], 3, true);
+	animal.animations.add("graze", [0, 1], 5, true);
 	animal.animations.play("graze");
-}
+};
 
 function createCars(cars, starts, speeds, timers, speed_m, s, t, c) {
     for (let i = 0; i < starts.length; ++i) {
