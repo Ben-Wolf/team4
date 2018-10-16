@@ -19,41 +19,44 @@ gameState.prototype.create = function() {
 	bound_l.scale.set(2, 6.5);
 	bound_l.body.immovable = true;
 	bound_l.tint = 0x000000;
-	let bound_r = this.bounds.create(860, 0, "bound_v");
+	let bound_r = this.bounds.create(1000, 0, "bound_v");
 	bound_r.scale.set(2, 6.5);
 	bound_r.body.immovable = true;
 	bound_r.tint = 0x000000;
 
     // Load in background assets TODO: SWITCH TO MOVING BACKGROUND
-	let map = game.add.tilemap("TileMap2");
-	map.addTilesetImage("newtiles", "newtiles");
-	map.addTilesetImage("curb", "curb");
-	let layer = map.createLayer("Tile Layer 1");
-	// this.map = game.add.sprite(0, 0, "background");
-	// this.map.scale.set(4.5, 4.5);
-	// this.map.animations.add("move", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-	// 								13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-	// 								24, 25, 26, 27, 28, 29], 10, true);
-	// this.map.animations.play("move");
+	// let map = game.add.tilemap("TileMap2");
+	// map.addTilesetImage("newtiles", "newtiles");
+	// map.addTilesetImage("curb", "curb");
+	// let layer = map.createLayer("Tile Layer 1");
+	this.map = game.add.sprite(0, 0, "map");
+	this.map.animations.add("right", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+		 							  13, 14, 15 ,16 ,17 ,18 ,19, 20, 21, 22,
+									  23, 24, 25, 26, 27, 28, 29, 30], 20, true);
+	this.map.animations.play("right");
+	// console.log(this.map.animations);
 
 	// Add HUD Area
     // Add "Steering wheel"
 	this.dash = game.add.sprite(0, 0, "dash");
     this.wheel = game.add.sprite(63, game.world.height - 390, "steering_wheel");
-    var style = { font: "32px Arial", fill: "#ff0044", wordWrap: true, wordWrapWidth: this.wheel.width, align: "center", backgroundColor: "#ffff00" };
+    var style = { font: "32px Arial", fill: "#ff0044", wordWrap: true, wordWrapWidth: this.wheel.width, align: "center" };
 	this.wheel.animations.add("right", [0, 1, 2, 3], 10, false);
 	this.wheel.animations.add("left", [0, 4, 5, 6], 10, false);
 	this.wheel.animations.add("reset_r", [3, 2, 1, 0], 10, false);
 	this.wheel.animations.add("reset_l", [6, 5, 4, 0], 10, false);
+	// console.log(this.wheel.animations);
 
     // Create the cars
 	this.perp = null;
+	this.animals = game.add.group();
+	this.animals.enableBody = true;
     this.cars = game.add.group();
     this.cars.enableBody = true;
     this.speeds = [350, 400, 550, 600];
-    this.starts = [150, 310, 450, 600, 760];
+    this.starts = [190, 350, 500, 650, 810];
     this.timers = [210, 160, 90, 120, 270];
-	this.sedans = ["sedan_red", "sedan_gray", "sedan_white"];
+	this.sedans = ["sedan_gray", "sedan_white"];
 	this.trucks = ["truck_red", "truck_gray", "truck_black", "truck_white"];
 	this.cargos = ["cargo_red", "cargo_gray", "cargo_green", "cargo_white"];
     createCars(this.cars, this.starts, this.speeds, this.timers, 1,
@@ -67,6 +70,7 @@ gameState.prototype.create = function() {
 	this.animalTimers = [200, 120, 60];
 	createAnimals(this.animals, this.animalStarts, this.animalSpeeds, this.animalTimers, 1);
 	*/
+	this.frameTimer = 30;
 
     // Create the player
     this.player = game.add.sprite(200, game.world.height - 950, "player");
@@ -79,22 +83,22 @@ gameState.prototype.create = function() {
     // Distance to perp
     this.perpBool = false;
 	this.d2p = 2000;
-    this.d2p_text = game.add.text(0, 1900, this.d2p + "m from Perp", style);
+    this.d2p_text = game.add.text(145, 1910, this.d2p + "m", style);
 
 	// Speed modifiers
 	this.d2p_since_last_crash = this.d2p;
 	this.speed_multiplier = 1;
-	this.spm_text = game.add.text(0, 2100, this.speed_multiplier + " = Multiplier!", style);
+	this.spm_text = game.add.text(335, 1910, "Gear = " + this.speed_multiplier, style);
 
     // Capture mouse input
     game.input.mouse.capture = true;
     //music for the stage TODO: stop music when switching to the end screen
     this.music=game.add.audio("chase");
     this.music.play("", 0, 1, true);
+	this.haltAnimation = 0;
 };
 
 gameState.prototype.update = function() {
-
     // Collisions
     game.physics.arcade.collide(this.bounds, this.player);
     //game.physics.arcade.collide(this.cars, this.cars);
@@ -119,18 +123,23 @@ gameState.prototype.update = function() {
 	else {
 		this.speed_multiplier = 1;
 	}
-	this.spm_text.setText(this.speed_multiplier + " = Multiplier!");
+	this.spm_text.setText("Gear = " + this.speed_multiplier);
 	this.d2p -= (0.5 * this.speed_multiplier);
 
     // Catching the perp logic
     if (this.d2p <= 450 && !this.perpBool) {
 		this.perp = spawnPerp(this.cars, this.starts);
 		this.perpBool = true;
-    } else {
-        this.d2p_text.setText(Math.round(this.d2p) + "m from Perp");
+    } else if (this.d2p >= 3000) {
+		game.state.start("Lose");
+	} else {
+        this.d2p_text.setText(Math.round(this.d2p) + "m");
     }
 
 	//Procedural Animal Generation
+	if (this.d2p % 500 == 0) {
+		spawnBird(this.animals);
+	}
 	//createAnimals(this.animals, this.animalStarts, this.animalSpeeds, this.animalTimers, this.speed_multiplier);
 
     // Turn wheel
@@ -168,6 +177,7 @@ gameState.prototype.win = function(player, perp) {
 
 // Player crash
 gameState.prototype.crash = function(player, object) {
+	this.haltAnimation = 90;
 	this.d2p += 350;
 	this.d2p_since_last_crash = this.d2p;
 	this.speed_multiplier = 1;
@@ -196,11 +206,20 @@ function inBounds(xIn, yIn, b) {
 };
 
 function spawnPerp(cars, start) {
-	perp = cars.create(start[2], 65, "sedan_red");
+	let perp = cars.create(start[2], 65, "sedan_red");
 	perp.body.velocity.y = 100;
 	perp.scale.set(1.5, 1.5);
 	return perp;
 };
+
+function spawnBird(animals) {
+	let animal = animals.create(0, 0, "bird");
+	animal.body.velocity.y = 400;
+	animal.body.velocity.x = -50;
+	animal.scale.set(3, 3);
+	animal.animations.add("graze", [0, 1], 3, true);
+	animal.animations.play("graze");
+}
 
 function createCars(cars, starts, speeds, timers, speed_m, s, t, c) {
     for (let i = 0; i < starts.length; ++i) {
@@ -208,7 +227,7 @@ function createCars(cars, starts, speeds, timers, speed_m, s, t, c) {
 			// Choose a type of car, 50% sedan, 30% truck, 20% cargo
 			let type_picker = getRandomInt(10);
 			let type = s;
-			let colors = 3;
+			let colors = 2;
 			if (type_picker >= 5 && type_picker < 8) {
 				type = t;
 				colors = 4;

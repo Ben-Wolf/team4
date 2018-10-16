@@ -24,11 +24,12 @@ preloadState.prototype.preload = function() {
 	game.load.image("bound_h", "assets/bounds/bound_h.png");
 	game.load.image("bound_v", "assets/bounds/bound_v.png");
 	// Animals
-	game.load.image("bird", "assets/animals/bird.png");
+	game.load.spritesheet("bird", "assets/animals/bird.png", 48, 48);
 	// HUD
-    game.load.spritesheet("steering_wheel", "assets/steering_wheel.png", 468, 468);
-    game.load.spritesheet("alert","assets/alert_gauges.png",200,200);
+    game.load.spritesheet("steering_wheel", "assets/HUD/steering_wheel.png", 468, 468);
+    game.load.spritesheet("alert","assets/HUD/alert_gauges.png",200,200);
     game.load.image("carHUD","assets/HUD.png");
+	game.load.image("dash", "assets/HUD/dash.png");
     game.load.image("gear", "assets/gear_shift.png");
 	// Player
 	//game.load.spritesheet("player", "assets/patrol_car.png", 64, 118);
@@ -38,7 +39,7 @@ preloadState.prototype.preload = function() {
 	game.load.tilemap("TileMap2", "assets/map2.json", null, Phaser.Tilemap.TILED_JSON);
 	game.load.image("newtiles", "assets/newtiles.png");
 	game.load.image("curb", "assets/curb.png");
-	game.load.image("map", "assets/bigmap.png")
+	game.load.spritesheet("map", "assets/map/bigmap.png", 1125, 2436, 30);
 	//sound effects
 	game.load.audio("siren","assets/siren.mp3");
 	//music
@@ -54,5 +55,4 @@ preloadState.prototype.preload = function() {
 
 preloadState.prototype.create = function() {
     game.state.start("Title");
-    // game.state.start("Game"); // Uncomment phase you're testing
 };
