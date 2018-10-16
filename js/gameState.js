@@ -49,7 +49,7 @@ gameState.prototype.create = function() {
 	//this.numCars = 0;
     this.cars.enableBody = true;
     this.speeds = [350, 400, 550, 600];
-    this.starts = [190, 350, 500, 650, 810];
+    this.starts = [190, 350, 500, 660, 830];
     this.timers = [210, 160, 90, 120, 270];
 	this.sedans = ["sedan_gray", "sedan_white"];
 	this.trucks = ["truck_red", "truck_gray", "truck_black", "truck_white"];
@@ -109,17 +109,18 @@ gameState.prototype.update = function() {
 
 	// Apply speed multipliers and finding perp logic
 	if (!this.perpBool) {
+		this.d2p -= (0.5 * this.speed_multiplier);
 		this.speed_multiplier = Math.floor((this.d2p_since_last_crash - this.d2p) / 500) + 1;
+		this.map.animations.speed = 10 * this.speed_multiplier;
 
 	    // Procedural Car Generation
 	    createCars(this.cars, this.starts, this.speeds, this.timers,
 					this.speed_multiplier, this.sedans, this.trucks, this.cargos);
 	}
 	else {
-		this.speed_multiplier = 1;
+		this.d2p -= (0.5);
 	}
 	this.spm_text.setText("Gear = " + this.speed_multiplier);
-	this.d2p -= (0.5 * this.speed_multiplier);
 
     // Catching the perp logic
     if (this.d2p <= 450 && !this.perpBool) {
@@ -184,10 +185,10 @@ gameState.prototype.crash = function(player, object) {
 	this.d2p_since_last_crash = this.d2p;
 	this.speed_multiplier = 1;
 	this.timers = [210, 160, 90, 120, 270];
-	this.cars.forEach(function (c) {
-		c.body.velocity.y = -1 * Math.abs(c.body.velocity.y); });
+	// this.cars.forEach(function (c) {
+	// 	c.body.velocity.y = -1 * Math.abs(c.body.velocity.y); });
 	//this.hasCrashed = true;
-	this.map.animations.paused = true;
+	// this.map.animations.paused = true;
 	//this.animals.forEach(function (a) { a.kill(); });
 };
 
