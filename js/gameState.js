@@ -15,7 +15,7 @@ gameState.prototype.create = function() {
 	bound_t.scale.set(4, 2);
 	bound_t.body.immovable = true;
 	bound_t.tint = 0x000000;
-	let bound_l = this.bounds.create(80, 0, "bound_v");
+	let bound_l = this.bounds.create(120, 0, "bound_v");
 	bound_l.scale.set(2, 6.5);
 	bound_l.body.immovable = true;
 	bound_l.tint = 0x000000;
@@ -24,17 +24,11 @@ gameState.prototype.create = function() {
 	bound_r.body.immovable = true;
 	bound_r.tint = 0x000000;
 
-    // Load in background assets TODO: SWITCH TO MOVING BACKGROUND
-	// let map = game.add.tilemap("TileMap2");
-	// map.addTilesetImage("newtiles", "newtiles");
-	// map.addTilesetImage("curb", "curb");
-	// let layer = map.createLayer("Tile Layer 1");
 	this.map = game.add.sprite(0, 0, "map");
 	this.map.animations.add("right", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
 		 							  13, 14, 15 ,16 ,17 ,18 ,19, 20, 21, 22,
 									  23, 24, 25, 26, 27, 28, 29, 30], 20, true);
 	this.map.animations.play("right");
-	// console.log(this.map.animations);
 
 	// Add HUD Area
     // Add "Steering wheel"
@@ -52,6 +46,7 @@ gameState.prototype.create = function() {
 	this.animals = game.add.group();
 	this.animals.enableBody = true;
     this.cars = game.add.group();
+	//this.numCars = 0;
     this.cars.enableBody = true;
     this.speeds = [350, 400, 550, 600];
     this.starts = [190, 350, 500, 650, 810];
@@ -164,6 +159,13 @@ gameState.prototype.update = function() {
 // Remove cars that reach the lower bounds
 gameState.prototype.removeCar = function(boundary, car) {
     car.kill();
+	/*
+	this.numCars -= 1;
+	if(this.numCars < 1){
+		this.hasCrashed = false;
+		this.map.animations = true;
+	}
+	*/
 };
 /*
 gameState.prototype.removeAnimal = function(boundary, animal) {
@@ -182,7 +184,10 @@ gameState.prototype.crash = function(player, object) {
 	this.d2p_since_last_crash = this.d2p;
 	this.speed_multiplier = 1;
 	this.timers = [210, 160, 90, 120, 270];
-    this.cars.forEach(function (c) { if (c !== this.perp) c.kill(); });
+	this.cars.forEach(function (c) {
+		c.body.velocity.y = -1 * Math.abs(c.body.velocity.y); });
+	//this.hasCrashed = true;
+	this.map.animations.paused = true;
 	//this.animals.forEach(function (a) { a.kill(); });
 };
 
@@ -239,6 +244,7 @@ function createCars(cars, starts, speeds, timers, speed_m, s, t, c) {
 			// Spawn the car
             timers[i] = 250/speed_m;
             let car = cars.create(starts[i], 65, type[getRandomInt(colors)]);
+			//this.numCars += 1;
             car.body.velocity.y = speeds[getRandomInt(4)] * speed_m;
             car.scale.set(1.5,1.5);
         } else {
