@@ -119,6 +119,12 @@ gameState.prototype.update = function() {
 	}
 	this.spm_text.setText(this.speed_multiplier + " = Multiplier!");
 	this.d2p -= (0.5 * this.speed_multiplier);
+	/*
+	if(!this.hasCrashed){
+		this.d2p -= (0.5 * this.speed_multiplier);
+	}
+	*/
+
 
     //
     if (this.d2p <= 500 && !this.perpBool) {
@@ -137,6 +143,13 @@ gameState.prototype.update = function() {
 			this.speed_multiplier, this.sedans, this.trucks, this.cargos);
 	}
 	*/
+
+	/*
+	if(this.numCars < 1 && this.hasCrashed){
+		this.restartCars();
+	}
+	*/
+	
 
 	//Procedural Animal Generation
 	//createAnimals(this.animals, this.animalStarts, this.animalSpeeds, this.animalTimers, this.speed_multiplier);
@@ -163,8 +176,8 @@ gameState.prototype.update = function() {
 // Remove cars that reach the lower bounds
 gameState.prototype.removeCar = function(boundary, car) {
     car.kill();
+	//this.numCars -= 1;
 	/*
-	this.numCars -= 1;
 	if(this.numCars < 1){
 		this.hasCrashed = false;
 		this.map.animations = true;
@@ -240,6 +253,13 @@ function createCars(cars, starts, speeds, timers, speed_m, s, t, c) {
         }
     }
 };
+/*
+gameState.prototype.restartCars = function() {
+	this.hasCrashed = false;
+	this.map.animations.paused = false;
+};
+*/
+
 /*
 function createAnimals(animals, starts, speeds, timers, speed_m) {
     for (let i = 0; i < 3; ++i) {
