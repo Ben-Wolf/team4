@@ -122,7 +122,7 @@ titleState.prototype.create = function(){
 	this.player.angle=-90;
 	this.ani=this.player.animations.add("siren", [0,1,2,3,4,5,6,7,8,7,6,5,4,3,2,1]);
 	this.hud=new HUD(game, this.depthGroup);
-	this.currentTime=0;
+	this.currentTime=game.time.totalElapsedSeconds();
 	this.spawnTime=0;
 	this.transitionStarted=false;
 	this.siren=game.add.audio('siren');
@@ -130,6 +130,7 @@ titleState.prototype.create = function(){
 	this.music.play("", 0, 1, true);
 	this.wantedSpawned=false;
 	this.timeAfterWanted=0;
+	this.startTime=game.time.totalElapsedSeconds();
 	//spawnNewCar(this.hud, this.depthGroup);
 };
 titleState.prototype.update = function(){
@@ -174,9 +175,10 @@ titleState.prototype.update = function(){
 	if(this.transitionStarted&&this.hud.pastPoint){
 		movePlayer(this.player, this.siren, this.music);
 	}
-	if((this.wantedSpawned&&60<=this.game.time.totalElapsedSeconds()-this.timeAfterWanted)||200<=this.game.time.totalElapsedSeconds()){
-		console.log("lose");
-		//put transition to lose screen here
+	if((this.wantedSpawned&&60<=this.game.time.totalElapsedSeconds()-this.timeAfterWanted)||this.startTime+200<=this.game.time.totalElapsedSeconds()){
+		this.music.stop();
+		this.siren.stop();
+		game.state.start("Loss.png");
 	}
 };
 //used to kill the car when it hits the bounds of the screen.

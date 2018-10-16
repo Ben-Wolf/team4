@@ -7,6 +7,8 @@
 	<script type="text/javascript" src="js/preloadState.js"></script>
 	<script type="text/javascript" src="js/gameState.js"></script>
 	<script type="text/javascript" src="js/title.js"></script>
+	<script type="text/javascript" src="js/actualTitle.js"></script>
+	<script type="text/javascript" src="js/loseState.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -20,8 +22,10 @@
 	let game = new Phaser.Game(1125, 2436, Phaser.AUTO);
 
 	game.state.add("Preload", preloadState);
-	game.state.add("Title", titleState);
+	game.state.add("Title", actualTitleState)
+	game.state.add("Phase1", titleState);
 	game.state.add("Game", gameState);
+	game.state.add("Loss.png",loseState);
 	game.state.start("Preload");
 
 </script>
