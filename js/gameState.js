@@ -7,7 +7,7 @@ gameState.prototype.create = function() {
     // Create the boundaries
 	this.bounds = game.add.group();
 	this.bounds.enableBody = true;
-	let bound_b = this.bounds.create(0, game.world.height - 600, "bound_h");
+	let bound_b = this.bounds.create(0, game.world.height - 650, "bound_h");
 	bound_b.scale.set(4, 2);
 	bound_b.body.immovable = true;
 	bound_b.tint = 0x000000;
@@ -19,7 +19,7 @@ gameState.prototype.create = function() {
 	bound_l.scale.set(2, 6.5);
 	bound_l.body.immovable = true;
 	bound_l.tint = 0x000000;
-	let bound_r = this.bounds.create(1000, 0, "bound_v");
+	let bound_r = this.bounds.create(950, 0, "bound_v");
 	bound_r.scale.set(2, 6.5);
 	bound_r.body.immovable = true;
 	bound_r.tint = 0x000000;
@@ -127,6 +127,7 @@ gameState.prototype.update = function() {
 		this.perp = spawnPerp(this.cars, this.starts);
 		this.perpBool = true;
     } else if (this.d2p >= 3000) {
+		this.music.stop();
 		game.state.start("Lose");
 	} else {
         this.d2p_text.setText(Math.round(this.d2p) + "m");
