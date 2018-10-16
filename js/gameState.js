@@ -72,7 +72,7 @@ gameState.prototype.create = function() {
 
     // Distance to perp
     this.perpBool = false;
-	this.d2p = 4000;
+	this.d2p = 2000;
     this.d2p_text = game.add.text(145, 1910, this.d2p + "m", style);
 
 	// Speed modifiers
@@ -141,7 +141,7 @@ gameState.prototype.update = function() {
     if (this.d2p <= 450 && !this.perpBool) {
 		this.perp = spawnPerp(this.cars, this.starts);
 		this.perpBool = true;
-    } else if (this.d2p >= 5000) {
+    } else if (this.d2p >= 3000) {
 		this.music.stop();
 		game.state.start("Lose");
 	} else {
