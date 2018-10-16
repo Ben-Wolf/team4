@@ -185,6 +185,9 @@ titleState.prototype.update = function(){
 resetThis=function(car, hud){
 	car.hud.takenArray[car.plateIndex]=false;
 	car.destroy();
+	if(car.isWanted){
+		car.hud.win=false;
+	}
 };
 spawnNewCar=function(hud, group){
 	let spawnedCar=new Car(game,32 , 2436-132-118, Math.floor(Math.random()*5),hud.takenArray,hud);

@@ -9,6 +9,7 @@
 	<script type="text/javascript" src="js/title.js"></script>
 	<script type="text/javascript" src="js/actualTitle.js"></script>
 	<script type="text/javascript" src="js/loseState.js"></script>
+	<script type="text/javascript" src="js/winState.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -26,6 +27,7 @@
 	game.state.add("Phase1", titleState);
 	game.state.add("Game", gameState);
 	game.state.add("Loss.png",loseState);
+	game.state.add("Win",winState);
 	game.state.start("Preload");
 
 </script>
