@@ -43,6 +43,9 @@ preloadState.prototype.preload = function() {
 	//music 
 	game.load.audio("identify","assets/Identify.wav");
 	game.load.audio("chase","assets/Chase.wav");
+	//win/lose/title screens
+	game.load.image("win","assets/WinScreen.png");
+	game.load.image("title","assets/TitleScreen.png");
 };
 
 preloadState.prototype.create = function() {
