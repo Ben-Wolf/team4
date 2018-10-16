@@ -184,6 +184,8 @@ gameState.prototype.win = function(player, perp) {
 gameState.prototype.crash = function(player, object) {
 	this.haltAnimation = 90;
 	this.d2p += 350;
+    //car would continue to collide with the object, so now the object is killed on collision to prevent that
+    object.kill();
 	this.d2p_since_last_crash = this.d2p;
 	this.speed_multiplier = 1;
 	this.timers = [210, 160, 90, 120, 270];
