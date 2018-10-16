@@ -29,6 +29,7 @@ gameState.prototype.create = function() {
 		 							  13, 14, 15 ,16 ,17 ,18 ,19, 20, 21, 22,
 									  23, 24, 25, 26, 27, 28, 29, 30], 20, true);
 	this.map.animations.play("right");
+	//this.map.animations.paused = false;
 
 	// Add HUD Area
     // Add "Steering wheel"
@@ -47,6 +48,8 @@ gameState.prototype.create = function() {
 	this.animals.enableBody = true;
     this.cars = game.add.group();
 	//this.numCars = 0;
+	this.numDeleted = 0;
+	this.hasCrashed = false;
     this.cars.enableBody = true;
     this.speeds = [350, 400, 550, 600];
     this.starts = [190, 350, 500, 660, 830];
@@ -107,20 +110,36 @@ gameState.prototype.update = function() {
     game.physics.arcade.overlap(this.player, this.cars, this.crash, null, this);
 	//game.physics.arcade.overlap(this.player, this.animals, this.crash, null, this);
 
+	//When all cars are gone, start driving again
+	this.numCars = this.cars.length;
+	if(this.hasCrashed && this.numCars - this.numDeleted === 0){
+		this.hasCrashed = false;
+		this.map.animations.paused = false;
+	}
+
 	// Apply speed multipliers and finding perp logic
 	if (!this.perpBool) {
-		this.d2p -= (0.5 * this.speed_multiplier);
-		this.speed_multiplier = Math.floor((this.d2p_since_last_crash - this.d2p) / 500) + 1;
+		if(!this.hasCrashed){
+			this.d2p -= (0.5 * this.speed_multiplier);
+			this.speed_multiplier = Math.floor((this.d2p_since_last_crash - this.d2p) / 500) + 1;
+		}
+		else{
+			this.speed_multiplier = 0;
+		}
+		//Procedural Car Generation
+		createCars(this.cars, this.starts, this.speeds, this.timers,
+						this.speed_multiplier, this.sedans, this.trucks, this.cargos);
 		this.map.animations.speed = 10 * this.speed_multiplier;
-
-	    // Procedural Car Generation
-	    createCars(this.cars, this.starts, this.speeds, this.timers,
-					this.speed_multiplier, this.sedans, this.trucks, this.cargos);
 	}
 	else {
 		this.d2p -= (0.5);
 	}
-	this.spm_text.setText("Gear = " + this.speed_multiplier);
+	if(!this.hasCrashed){
+		this.spm_text.setText("Gear = " + this.speed_multiplier);
+	}
+	else{
+		this.spm_text.setText("Gear = 1");
+	}
 
     // Catching the perp logic
     if (this.d2p <= 450 && !this.perpBool) {
@@ -161,13 +180,7 @@ gameState.prototype.update = function() {
 // Remove cars that reach the lower bounds
 gameState.prototype.removeCar = function(boundary, car) {
     car.kill();
-	//this.numCars -= 1;
-	/*
-	if(this.numCars < 1){
-		this.hasCrashed = false;
-		this.map.animations = true;
-	}
-	*/
+	this.numDeleted += 1;
 };
 /*
 gameState.prototype.removeAnimal = function(boundary, animal) {
@@ -182,15 +195,17 @@ gameState.prototype.win = function(player, perp) {
 
 // Player crash
 gameState.prototype.crash = function(player, object) {
+	object.kill();
+	this.numDeleted += 1;
 	this.haltAnimation = 90;
 	this.d2p += 350;
 	this.d2p_since_last_crash = this.d2p;
 	this.speed_multiplier = 1;
 	this.timers = [210, 160, 90, 120, 270];
-	// this.cars.forEach(function (c) {
-	// 	c.body.velocity.y = -1 * Math.abs(c.body.velocity.y); });
-	//this.hasCrashed = true;
-	// this.map.animations.paused = true;
+	 this.cars.forEach(function (c) {
+		c.body.velocity.y = -2 * Math.abs(c.body.velocity.y); });
+	this.hasCrashed = true;
+	this.map.animations.paused = true;
 	//this.animals.forEach(function (a) { a.kill(); });
 };
 
@@ -231,7 +246,7 @@ function spawnBird(animals) {
 
 function createCars(cars, starts, speeds, timers, speed_m, s, t, c) {
     for (let i = 0; i < starts.length; ++i) {
-        if (timers[i] === 0) {
+        if (timers[i] === 0 && speed_m > 0) {
 			// Choose a type of car, 50% sedan, 30% truck, 20% cargo
 			let type_picker = getRandomInt(10);
 			let type = s;
@@ -247,10 +262,9 @@ function createCars(cars, starts, speeds, timers, speed_m, s, t, c) {
 			// Spawn the car
             timers[i] = 250/speed_m;
             let car = cars.create(starts[i], 65, type[getRandomInt(colors)]);
-			//this.numCars += 1;
             car.body.velocity.y = speeds[getRandomInt(4)] * speed_m;
             car.scale.set(1.5,1.5);
-        } else {
+        } else if(speed_m > 0){
             timers[i]--;
         }
     }
