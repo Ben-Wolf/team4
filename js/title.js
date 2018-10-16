@@ -138,7 +138,7 @@ titleState.prototype.update = function(){
 		else if(this.hud.slider.x<650){
 			this.hud.slider.x=650;
 		}
-	if(game.input.mousePointer.x<650||game.input.mousePointer.x>1000){
+	if(game.input.mousePointer.x<650||game.input.mousePointer.x>1080){
 		this.hud.slider.input.allowHorizontalDrag=false;
 	}
 	else if(!this.hud.slider.input.allowHorizontalDrag){
