@@ -69,7 +69,7 @@ Car.prototype.update=function(){
 //car movement should be defined in here
 	this.y+=this.moveVelo;
 	//this.txt.y=this.y;
-	
+
 	this.checkWorldBounds = true;
 	/*if(this.moveVelo>0&&this.y>=2436-132-118){
 		game.state.start("Game");
@@ -107,6 +107,7 @@ let titleState = function(){
 };
 
 titleState.prototype.create = function(){
+	this.sirenOn = false;
 	this.depthGroup=game.add.group();
 	this.foundCar=false;
 	let map = game.add.tilemap("TileMap1");
@@ -140,6 +141,12 @@ titleState.prototype.update = function(){
 	}
 	if(this.hud.slider.x>=580){
 		if(this.hud.win){
+			if (this.sirenOn == false) {
+				siren = game.add.audio('siren');
+				siren.play();
+				siren.volume = .5;
+			}
+			this.sirenOn = true;
 			transitionAni(this.hud.winCar);
 			if(!this.ani.isPlaying){
 				this.ani.play(10,true);
@@ -156,7 +163,7 @@ titleState.prototype.update = function(){
 	if(this.spawnTime<=this.game.time.totalElapsedSeconds()-this.currentTime&&!this.foundCar){
 		spawnNewCar(this.hud, this.depthGroup);
 		this.currentTime=this.game.time.totalElapsedSeconds();
-		this.spawnTime=Math.floor(Math.random()*10)+3;
+		this.spawnTime=Math.floor(Math.random()*5)+3;
 	}
 	if(this.transitionStarted&&this.hud.pastPoint){
 		movePlayer(this.player);
@@ -199,10 +206,10 @@ clicked=function(car){
 		car.hud.colorGauge.frame=8;
 	}
 	else{
-		car.hud.colorGauge.frame=9;	
+		car.hud.colorGauge.frame=9;
 	}
 	car.hud.plateGauge.frame=14+car.plateIndex;
-	
+
 };
 goBack=function(slider){
 		slider.x=500;

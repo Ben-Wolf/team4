@@ -24,20 +24,22 @@ gameState.prototype.create = function() {
 	bound_r.body.immovable = true;
 	bound_r.tint = 0x000000;
 
-    // Load in background assets
+    // Load in background assets TODO: SWITCH TO MOVING BACKGROUND
 	let map = game.add.tilemap("TileMap2");
 	map.addTilesetImage("newtiles", "newtiles");
 	map.addTilesetImage("curb", "curb");
 	let layer = map.createLayer("Tile Layer 1");
+	// this.map = game.add.sprite(0, 0, "background");
+	// this.map.scale.set(4.5, 4.5);
+	// this.map.animations.add("move", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+	// 								13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+	// 								24, 25, 26, 27, 28, 29], 10, true);
+	// this.map.animations.play("move");
 
 	// Add HUD Area
-	this.hud_area = game.add.sprite(0, game.world.height - 550, "bound_h");
-	this.hud_area.scale.set(5, 18);
-	this.hud_area.tint = 0x000000;
-
     // Add "Steering wheel"
-    this.wheel = game.add.sprite(210, game.world.height - 500, "steering_wheel");
-    this.wheel.scale.set(1, 1);
+	this.dash = game.add.sprite(0, 0, "dash");
+    this.wheel = game.add.sprite(63, game.world.height - 390, "steering_wheel");
     var style = { font: "32px Arial", fill: "#ff0044", wordWrap: true, wordWrapWidth: this.wheel.width, align: "center", backgroundColor: "#ffff00" };
 	this.wheel.animations.add("right", [0, 1, 2, 3], 10, false);
 	this.wheel.animations.add("left", [0, 4, 5, 6], 10, false);
@@ -66,13 +68,15 @@ gameState.prototype.create = function() {
 	createAnimals(this.animals, this.animalStarts, this.animalSpeeds, this.animalTimers, 1);
 	*/
 
-    // Create the player TODO: Change Murph to car
+    // Create the player
     this.player = game.add.sprite(200, game.world.height - 950, "player");
     this.player.scale.set(1.5, 1.5);
+	this.player.animations.add("chase", [0, 1, 2, 3, 4, 5, 6, 7, 8], 10, true);
+	this.player.animations.play("chase");
 	game.physics.arcade.enable(this.player);
 	this.player.body.collideWorldBounds = true;
 
-    // Distance to perp TODO: Implement more, based on speed
+    // Distance to perp
     this.perpBool = false;
 	this.d2p = 2000;
     this.d2p_text = game.add.text(0, 1900, this.d2p + "m from Perp", style);
@@ -94,33 +98,34 @@ gameState.prototype.update = function() {
 	//game.physics.arcade.collide(this.animals, this.player);
 
     // Overlaps
+	game.physics.arcade.overlap(this.player, this.perp, this.win, null, this);
 	game.physics.arcade.overlap(this.bounds, this.cars, this.removeCar, null, this);
+	game.physics.arcade.overlap(this.dash, this.cars, this.removeCar, null, this);
 	//game.physics.arcade.overlap(this.bounds, this.animals, this.removeAnimal, null, this);
     game.physics.arcade.overlap(this.player, this.cars, this.crash, null, this);
 	//game.physics.arcade.overlap(this.player, this.animals, this.crash, null, this);
-	game.physics.arcade.overlap(this.player, this.perp, this.win, null, this);
 
-	// Apply speed multipliers
-	if(!this.perpBool){
+	// Apply speed multipliers and finding perp logic
+	if (!this.perpBool) {
 		this.speed_multiplier = Math.floor((this.d2p_since_last_crash - this.d2p) / 500) + 1;
+
+	    // Procedural Car Generation
+	    createCars(this.cars, this.starts, this.speeds, this.timers,
+					this.speed_multiplier, this.sedans, this.trucks, this.cargos);
 	}
-	else{
+	else {
 		this.speed_multiplier = 1;
 	}
 	this.spm_text.setText(this.speed_multiplier + " = Multiplier!");
 	this.d2p -= (0.5 * this.speed_multiplier);
 
-    //
-    if (this.d2p <= 500 && !this.perpBool) {
-		spawnPerp(this.cars, this.starts);
+    // Catching the perp logic
+    if (this.d2p <= 450 && !this.perpBool) {
+		this.perp = spawnPerp(this.cars, this.starts);
 		this.perpBool = true;
     } else {
         this.d2p_text.setText(Math.round(this.d2p) + "m from Perp");
     }
-
-    // Procedural Car Generation
-    createCars(this.cars, this.starts, this.speeds, this.timers,
-				this.speed_multiplier, this.sedans, this.trucks, this.cargos);
 
 	//Procedural Animal Generation
 	//createAnimals(this.animals, this.animalStarts, this.animalSpeeds, this.animalTimers, this.speed_multiplier);
@@ -154,12 +159,17 @@ gameState.prototype.removeAnimal = function(boundary, animal) {
 };
 */
 
+gameState.prototype.win = function(player, perp) {
+	game.state.start("Win");
+}
+
 // Player crash
 gameState.prototype.crash = function(player, object) {
-	this.d2p += 200;
+	this.d2p += 350;
 	this.d2p_since_last_crash = this.d2p;
 	this.speed_multiplier = 1;
-    this.cars.forEach(function (c) { c.kill(); });
+	this.timers = [210, 160, 90, 120, 270];
+    this.cars.forEach(function (c) { if (c !== this.perp) c.kill(); });
 	//this.animals.forEach(function (a) { a.kill(); });
 };
 
@@ -183,9 +193,10 @@ function inBounds(xIn, yIn, b) {
 };
 
 function spawnPerp(cars, start) {
-	let perp = cars.create(start[2], 65, "sedan_red");
-	perp.body.velocity.y = 50;
+	perp = cars.create(start[2], 65, "sedan_red");
+	perp.body.velocity.y = 100;
 	perp.scale.set(1.5, 1.5);
+	return perp;
 };
 
 function createCars(cars, starts, speeds, timers, speed_m, s, t, c) {
