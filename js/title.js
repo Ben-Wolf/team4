@@ -150,7 +150,6 @@ titleState.prototype.update = function(){
 			if(!this.ani.isPlaying){
 				this.ani.play(10,true);
 				this.siren.play("", 0, .5, false);
-				console.log("lol");
 			}
 			this.transitionStarted=true;
 			this.foundCar=true;
