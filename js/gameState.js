@@ -29,7 +29,6 @@ gameState.prototype.create = function() {
 		 							  13, 14, 15 ,16 ,17 ,18 ,19, 20, 21, 22,
 									  23, 24, 25, 26, 27, 28, 29, 30], 20, true);
 	this.map.animations.play("right");
-	//this.map.animations.paused = false;
 
 	// Add HUD Area
     // Add "Steering wheel"
@@ -47,7 +46,6 @@ gameState.prototype.create = function() {
 	this.animals = game.add.group();
 	this.animals.enableBody = true;
     this.cars = game.add.group();
-	//this.numCars = 0;
 	this.numDeleted = 0;
 	this.hasCrashed = false;
     this.cars.enableBody = true;
@@ -60,14 +58,6 @@ gameState.prototype.create = function() {
     createCars(this.cars, this.starts, this.speeds, this.timers, 1,
 				this.sedans, this.trucks, this.cargos);
 
-	/*//Create the animals
-	this.animals = game.add.group();
-	this.animals.enableBody = true;
-	this.animalSpeeds = [100, 150, 200, 250];
-	this.animalStarts = [100, 440, 800];
-	this.animalTimers = [200, 120, 60];
-	createAnimals(this.animals, this.animalStarts, this.animalSpeeds, this.animalTimers, 1);
-	*/
 	this.frameTimer = 30;
 
     // Create the player
@@ -90,7 +80,7 @@ gameState.prototype.create = function() {
 
     // Capture mouse input
     game.input.mouse.capture = true;
-    //music for the stage TODO: stop music when switching to the end screen
+    //music for the stage
     this.music=game.add.audio("chase");
     this.music.play("", 0, 1, true);
 	this.haltAnimation = 0;
@@ -99,8 +89,6 @@ gameState.prototype.create = function() {
 gameState.prototype.update = function() {
     // Collisions
     game.physics.arcade.collide(this.bounds, this.player);
-    //game.physics.arcade.collide(this.cars, this.cars);
-	//game.physics.arcade.collide(this.animals, this.player);
 
     // Overlaps
 	game.physics.arcade.overlap(this.player, this.perp, this.win, null, this);
@@ -156,7 +144,6 @@ gameState.prototype.update = function() {
 	if (this.d2p % 500 == 0) {
 		spawnBird(this.animals);
 	}
-	//createAnimals(this.animals, this.animalStarts, this.animalSpeeds, this.animalTimers, this.speed_multiplier);
 
     // Turn wheel
     this.player.body.velocity.x = 0;
@@ -283,27 +270,6 @@ function createCars(cars, starts, speeds, timers, speed_m, s, t, c) {
         }
     }
 };
-/*
-gameState.prototype.restartCars = function() {
-	this.hasCrashed = false;
-	this.map.animations.paused = false;
-};
-*/
-
-/*
-function createAnimals(animals, starts, speeds, timers, speed_m) {
-    for (let i = 0; i < 3; ++i) {
-        if (timers[i] === 0) {
-            timers[i] = 120;
-            let animal = animals.create(65, starts[i], "bird");
-            animal.body.velocity.x = - 100;
-            animal.scale.set(3,3);
-        } else {
-            timers[i]--;
-        }
-    }
-};
-*/
 
 // Bless JS Hoisting
 function getRandomInt(max) {
