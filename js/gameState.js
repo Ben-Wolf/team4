@@ -15,20 +15,25 @@ gameState.prototype.create = function() {
 	bound_t.scale.set(4, 2);
 	bound_t.body.immovable = true;
 	bound_t.tint = 0x000000;
-	let bound_l = this.bounds.create(80, 0, "bound_v");
+	let bound_l = this.bounds.create(120, 0, "bound_v");
 	bound_l.scale.set(2, 6.5);
 	bound_l.body.immovable = true;
 	bound_l.tint = 0x000000;
-	let bound_r = this.bounds.create(860, 0, "bound_v");
+	let bound_r = this.bounds.create(950, 0, "bound_v");
 	bound_r.scale.set(2, 6.5);
 	bound_r.body.immovable = true;
 	bound_r.tint = 0x000000;
 
     // Load in background assets
+	/*
 	let map = game.add.tilemap("TileMap2");
 	map.addTilesetImage("newtiles", "newtiles");
 	map.addTilesetImage("curb", "curb");
 	let layer = map.createLayer("Tile Layer 1");
+	*/
+	this.map = game.add.sprite(0,0, "map");
+	this.map.animations.add("move", [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29], 30, true);
+	this.map.animations.play("move");
 
 	// Add HUD Area
 	this.hud_area = game.add.sprite(0, game.world.height - 550, "bound_h");
@@ -46,10 +51,12 @@ gameState.prototype.create = function() {
 
     // Create the cars
 	this.perp = null;
+	//this.hasCrashed = false;
     this.cars = game.add.group();
+	//this.numCars = 0;
     this.cars.enableBody = true;
     this.speeds = [350, 400, 550, 600];
-    this.starts = [150, 310, 450, 600, 760];
+    this.starts = [190, 350, 500, 660, 830];
     this.timers = [210, 160, 90, 120, 270];
 	this.sedans = ["sedan_red", "sedan_gray", "sedan_white"];
 	this.trucks = ["truck_red", "truck_gray", "truck_black", "truck_white"];
@@ -122,8 +129,14 @@ gameState.prototype.update = function() {
     }
 
     // Procedural Car Generation
-    createCars(this.cars, this.starts, this.speeds, this.timers,
-				this.speed_multiplier, this.sedans, this.trucks, this.cargos);
+	createCars(this.cars, this.starts, this.speeds, this.timers,
+			this.speed_multiplier, this.sedans, this.trucks, this.cargos);
+	/*
+	if(!this.hasCrashed){
+		createCars(this.cars, this.starts, this.speeds, this.timers,
+			this.speed_multiplier, this.sedans, this.trucks, this.cargos);
+	}
+	*/
 
 	//Procedural Animal Generation
 	//createAnimals(this.animals, this.animalStarts, this.animalSpeeds, this.animalTimers, this.speed_multiplier);
@@ -150,6 +163,13 @@ gameState.prototype.update = function() {
 // Remove cars that reach the lower bounds
 gameState.prototype.removeCar = function(boundary, car) {
     car.kill();
+	/*
+	this.numCars -= 1;
+	if(this.numCars < 1){
+		this.hasCrashed = false;
+		this.map.animations = true;
+	}
+	*/
 };
 /*
 gameState.prototype.removeAnimal = function(boundary, animal) {
@@ -162,7 +182,10 @@ gameState.prototype.crash = function(player, object) {
 	this.d2p += 200;
 	this.d2p_since_last_crash = this.d2p;
 	this.speed_multiplier = 1;
-    this.cars.forEach(function (c) { c.kill(); });
+	this.cars.forEach(function (c) {
+		c.body.velocity.y = -1 * Math.abs(c.body.velocity.y); });
+	//this.hasCrashed = true;
+	this.map.animations.paused = true;
 	//this.animals.forEach(function (a) { a.kill(); });
 };
 
@@ -209,6 +232,7 @@ function createCars(cars, starts, speeds, timers, speed_m, s, t, c) {
 			// Spawn the car
             timers[i] = 250/speed_m;
             let car = cars.create(starts[i], 65, type[getRandomInt(colors)]);
+			//this.numCars += 1;
             car.body.velocity.y = speeds[getRandomInt(4)] * speed_m;
             car.scale.set(1.5,1.5);
         } else {

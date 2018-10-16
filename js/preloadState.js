@@ -37,7 +37,7 @@ preloadState.prototype.preload = function() {
 	game.load.tilemap("TileMap2", "assets/map2.json", null, Phaser.Tilemap.TILED_JSON);
 	game.load.image("newtiles", "assets/newtiles.png");
 	game.load.image("curb", "assets/curb.png");
-	game.load.image("map", "assets/bigmap.png")
+	game.load.spritesheet("map", "assets/bigmap.png", 1125, 2436);
 	//sound effects
 	game.load.audio("siren","assets/siren.mp3");
 	//music 
